@@ -3445,15 +3445,17 @@ function drawDashWeightChart() {
 }
 
 window.addEventListener('load', () => {
-  const d = new Date();
-  document.getElementById('topbar-date').textContent = d.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  // Init counts on load
-  checkAutoDark();
-  seedShop();
-  drawTempChart();
-  initSync();
-  renderExamTable();
-  setTimeout(drawDashWeightChart, 100);
+  try {
+    const d = new Date();
+    const el = document.getElementById('topbar-date');
+    if (el) el.textContent = d.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    checkAutoDark();
+    seedShop();
+  } catch(e) { console.warn('Load init error:', e); }
+  try { drawTempChart(); } catch(e) { console.warn('drawTempChart:', e); }
+  try { renderExamTable(); } catch(e) { console.warn('renderExamTable:', e); }
+  setTimeout(() => { try { drawDashWeightChart(); } catch(e) { console.warn('dashChart:', e); } }, 100);
+  initSync(); // deferred internally, never blocks
 });
 
 
@@ -3473,8 +3475,9 @@ function initSupabase() {
     loadAllData();
     subscribeRealtime();
   } catch(e) {
-    console.error('Supabase init error:', e);
+    console.warn('Supabase init error:', e);
     setSyncStatus('offline');
+    sb = null;
   }
 }
 
@@ -3557,7 +3560,7 @@ async function loadTemperatures() {
 
 /* ── SAVE FUNCTIONS ─────────────────────────────────────── */
 async function dbSaveTetee(sein, heure, duree, note) {
-  if (!sb) return;
+  if (!sb) { showToast('🍼 Tétée enregistrée (hors ligne — sync inactive)'); return; }
   const { error } = await sb.from('tetes').insert({
     heure: heure || new Date().toISOString(),
     sein, duree_min: duree || null, note: note || null
@@ -3567,7 +3570,7 @@ async function dbSaveTetee(sein, heure, duree, note) {
 }
 
 async function dbSaveCouche(type, couleur, quantite, heure, note) {
-  if (!sb) return;
+  if (!sb) { showToast('🧷 Couche enregistrée (hors ligne — sync inactive)'); return; }
   const { error } = await sb.from('couches').insert({
     heure: heure || new Date().toISOString(),
     type, couleur: couleur || null,
@@ -3578,7 +3581,7 @@ async function dbSaveCouche(type, couleur, quantite, heure, note) {
 }
 
 async function dbSaveSommeil(debut, fin, note) {
-  if (!sb) return;
+  if (!sb) { showToast('😴 Sommeil enregistré (hors ligne — sync inactive)'); return; }
   const { error } = await sb.from('sommeil').insert({
     debut: debut || new Date().toISOString(),
     fin: fin || null, note: note || null
@@ -3588,7 +3591,7 @@ async function dbSaveSommeil(debut, fin, note) {
 }
 
 async function dbSavePoids(valeur_kg, taille_cm, heure) {
-  if (!sb) return;
+  if (!sb) { showToast('⚖️ Poids enregistré (hors ligne — sync inactive)'); return; }
   const { error } = await sb.from('poids').insert({
     heure: heure || new Date().toISOString(),
     valeur_kg: parseFloat(valeur_kg),
@@ -3599,7 +3602,7 @@ async function dbSavePoids(valeur_kg, taille_cm, heure) {
 }
 
 async function dbSaveTemp(valeur, methode, heure) {
-  if (!sb) return;
+  if (!sb) { showToast('🌡️ Température enregistrée (hors ligne — sync inactive)'); return; }
   const { error } = await sb.from('temperatures').insert({
     heure: heure || new Date().toISOString(),
     valeur: parseFloat(valeur), methode: methode || null
@@ -3739,9 +3742,21 @@ window.saveTempMeasure = _patchedSaveTemp;
 
 
 /* ── INIT ───────────────────────────────────────────────── */
-// Called from window.load
 function initSync() {
-  initSupabase();
+  // Defer Supabase init so CDN has time to load; never crash the app
+  setTimeout(() => {
+    try {
+      if (typeof supabase !== 'undefined' && supabase.createClient) {
+        initSupabase();
+      } else {
+        console.warn('Supabase CDN not loaded — running offline');
+        setSyncStatus('offline');
+      }
+    } catch(e) {
+      console.warn('Supabase init failed:', e);
+      setSyncStatus('offline');
+    }
+  }, 500);
 }
 
 // Draw charts when section becomes visible via ResizeObserver if needed
