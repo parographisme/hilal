@@ -906,6 +906,8 @@ canvas { display:block; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:rgba(167,139,250,0.25); border-radius:10px; }
 </style>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -923,6 +925,10 @@ canvas { display:block; }
 <header class="topbar">
   <div style="display:flex;align-items:center;gap:12px">
     <div class="mobile-menu-btn" onclick="openSidebar()">☰</div>
+    <button onclick="nav('dashboard')" style="display:flex;align-items:center;gap:8px;background:var(--g-purple);border:none;border-radius:100px;padding:8px 16px;cursor:pointer;box-shadow:0 4px 14px rgba(124,110,245,0.35);transition:all 0.2s;flex-shrink:0" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+      <span style="font-size:16px">🌙</span>
+      <span style="font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:white;letter-spacing:-0.2px">HILAL</span>
+    </button>
     <div class="topbar-left">
       <h1 id="topbar-title">Vue d'ensemble</h1>
       <p id="topbar-date">Jeudi 5 mars 2026</p>
@@ -944,7 +950,7 @@ canvas { display:block; }
 
 <!-- ===== DASHBOARD ===== -->
 <div class="section active" id="s-dashboard">
-  <div class="alert-banner">⚖️ <div><strong>Poids J+2 :</strong> 3,150 kg soit −12,5% du poids de naissance. Seuil critique à −10% — surveillance rapprochée recommandée. Consultez votre sage-femme ou pédiatre.</div></div>
+  <div class="alert-banner" style="background:linear-gradient(135deg,rgba(132,250,176,0.12),rgba(94,194,183,0.06));border-color:rgba(94,194,183,0.3);color:#2A8A60">✅ <div><strong>Reprise de poids J+3 :</strong> 3,320 g (+20 g vs J+2) — bonne nouvelle ! Perte cumulée de 270 g soit −7,5% du poids de naissance. Dans les normes OMS ✓</div></div>
 
   <!-- Quick actions -->
   <div class="g4" style="margin-bottom:20px">
@@ -1395,9 +1401,9 @@ canvas { display:block; }
 <div class="section" id="s-croissance">
   <div class="g3" style="margin-bottom:18px">
     <div style="background:linear-gradient(140deg,rgba(255,154,139,0.12),rgba(255,106,136,0.06));border-radius:var(--r);padding:20px;border:1.5px solid rgba(255,154,139,0.18);text-align:center">
-      <div style="font-size:28px;font-weight:900;background:var(--g-salmon);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">3,150 <span style="font-size:16px">kg</span></div>
-      <div style="font-size:11px;font-weight:800;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.3px;margin-top:6px">Poids J+2 ⚠️</div>
-      <div class="pill pill-salmon" style="margin-top:8px;display:inline-flex;background:var(--g-salmon);color:white">−12,5% naissance</div>
+      <div style="font-size:28px;font-weight:900;background:var(--g-salmon);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">3,320 <span style="font-size:16px">g</span></div>
+      <div style="font-size:11px;font-weight:800;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.3px;margin-top:6px">Poids J+3 ↗️</div>
+      <div class="pill pill-green" style="margin-top:8px;display:inline-flex">+20 g · −7,5% naissance</div>
     </div>
     <div style="background:linear-gradient(140deg,rgba(167,139,250,0.12),rgba(124,110,245,0.06));border-radius:var(--r);padding:20px;border:1.5px solid rgba(167,139,250,0.18);text-align:center">
       <div style="font-size:28px;font-weight:900;background:var(--g-purple);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">50 <span style="font-size:16px">cm</span></div>
@@ -1418,9 +1424,10 @@ canvas { display:block; }
     <div class="card">
       <div class="card-header"><div class="card-title">Historique des mesures</div><button class="btn-add" style="font-size:11px;padding:8px 14px" onclick="openModal('mesure')">+ Mesure</button></div>
       <div class="log-list">
-        <div class="log-item" style="border-left:3px solid #FF6060;background:rgba(255,100,100,0.06)"><div class="log-pill" style="background:var(--g-salmon)">⚠️</div><div class="log-info"><div class="log-main" style="color:#CC3030">3,150 kg — Seuil critique</div><div class="log-sub">5 mars 2026 · J+2 · Perte −12,5% · surveillance rapprochée</div></div><div class="log-time" style="font-size:10px;color:#CC3030;font-weight:900">−12,5%</div></div>
-        <div class="log-item" style="border-left:3px solid #F9CA24"><div class="log-pill" style="background:var(--g-yellow)">📉</div><div class="log-info"><div class="log-main">3,300 kg</div><div class="log-sub">4 mars 2026 · J+1 · Perte physiologique normale</div></div><div class="log-time" style="font-size:10px;color:#AA7800;font-weight:800">−8,1%</div></div>
-        <div class="log-item" style="border-left:3px solid #84FAB0"><div class="log-pill" style="background:var(--g-mint)">🌟</div><div class="log-info"><div class="log-main">3,590 kg · 50 cm</div><div class="log-sub">3 mars 2026 · Naissance · Pesée 07h00 · né à 06h21</div></div><div class="log-time" style="font-size:10px;color:var(--mint-deep);font-weight:800">Nais.</div></div>
+        <div class="log-item" style="border-left:3px solid #84FAB0;background:rgba(132,250,176,0.06)"><div class="log-pill" style="background:var(--g-mint)">↗️</div><div class="log-info"><div class="log-main" style="color:#2A8A60">3 320 g — Reprise !</div><div class="log-sub">6 mars 2026 · J+3 · +20 g · cumul −270 g · −7,5%</div></div><div class="log-time" style="font-size:10px;color:#2A8A60;font-weight:900">+20 g</div></div>
+        <div class="log-item" style="border-left:3px solid #FF9A8B;background:rgba(255,100,100,0.04)"><div class="log-pill" style="background:var(--g-salmon)">📉</div><div class="log-info"><div class="log-main">3 300 g</div><div class="log-sub">5 mars 2026 · J+2 · cumul −290 g · −8,1%</div></div><div class="log-time" style="font-size:10px;color:#CC6030;font-weight:800">−90 g</div></div>
+        <div class="log-item" style="border-left:3px solid #F9CA24"><div class="log-pill" style="background:var(--g-yellow)">📉</div><div class="log-info"><div class="log-main">3 390 g</div><div class="log-sub">4 mars 2026 · J+1 · Perte physiologique normale</div></div><div class="log-time" style="font-size:10px;color:#AA7800;font-weight:800">−200 g</div></div>
+        <div class="log-item" style="border-left:3px solid #84FAB0"><div class="log-pill" style="background:var(--g-mint)">🌟</div><div class="log-info"><div class="log-main">3 590 g · 50 cm</div><div class="log-sub">3 mars 2026 · Naissance · 06h28 · terme 41 SA+5</div></div><div class="log-time" style="font-size:10px;color:var(--mint-deep);font-weight:800">Nais.</div></div>
       </div>
     </div>
   </div>
@@ -1589,7 +1596,7 @@ canvas { display:block; }
   <div style="background:linear-gradient(135deg,rgba(167,139,250,0.10),rgba(124,110,245,0.06));border:1.5px solid rgba(167,139,250,0.25);border-radius:var(--r-sm);padding:11px 16px;display:flex;align-items:center;gap:10px;margin-bottom:18px;font-size:12px;font-weight:700;color:var(--purple-deep)">
     <span class="live-dot" style="background:var(--purple-deep)"></span>
     <div>Partagé en temps réel — si Papa coche un article, Maman le voit instantanément.</div>
-    <div style="margin-left:auto;font-size:10px;font-weight:800;color:var(--text-light)">2 appareils connectés</div>
+    <div id="sync-label" style="margin-left:auto;font-size:10px;font-weight:800;color:var(--text-light)">Connexion...</div>
   </div>
 
   <!-- Progress bar full-width -->
@@ -1789,25 +1796,73 @@ canvas { display:block; }
 <div class="modal-overlay" id="modal" onclick="if(event.target.id==='modal')closeModal()">
   <div class="modal">
     <div class="modal-title">Enregistrer une activité</div>
+
+    <!-- Type selector -->
     <div class="form-group">
       <label class="form-label">Type d'activité</label>
       <div class="type-grid">
-        <div class="type-btn sel" onclick="selType(this)"><span class="type-btn-icon">🍼</span>Tétée</div>
-        <div class="type-btn" onclick="selType(this)"><span class="type-btn-icon">😴</span>Sommeil</div>
-        <div class="type-btn" onclick="selType(this)"><span class="type-btn-icon">🧷</span>Couche</div>
-        <div class="type-btn" onclick="selType(this)"><span class="type-btn-icon">🌡️</span>Tempér.</div>
-        <div class="type-btn" onclick="selType(this)"><span class="type-btn-icon">🫧</span>Régurgi.</div>
-        <div class="type-btn" onclick="selType(this)"><span class="type-btn-icon">📏</span>Mesure</div>
-        <div class="type-btn" onclick="selType(this)"><span class="type-btn-icon">😢</span>Pleurs</div>
-        <div class="type-btn" onclick="selType(this)"><span class="type-btn-icon">💊</span>Médoc</div>
+        <div class="type-btn sel" data-type="tetee" onclick="selType(this)"><span class="type-btn-icon">🍼</span>Tétée</div>
+        <div class="type-btn" data-type="sommeil" onclick="selType(this)"><span class="type-btn-icon">😴</span>Sommeil</div>
+        <div class="type-btn" data-type="couche" onclick="selType(this)"><span class="type-btn-icon">🧷</span>Couche</div>
+        <div class="type-btn" data-type="temperature" onclick="selType(this)"><span class="type-btn-icon">🌡️</span>Tempér.</div>
+        <div class="type-btn" data-type="regurgi" onclick="selType(this)"><span class="type-btn-icon">🫧</span>Régurgi.</div>
+        <div class="type-btn" data-type="mesure" onclick="selType(this)"><span class="type-btn-icon">📏</span>Mesure</div>
+        <div class="type-btn" data-type="pleurs" onclick="selType(this)"><span class="type-btn-icon">😢</span>Pleurs</div>
+        <div class="type-btn" data-type="medoc" onclick="selType(this)"><span class="type-btn-icon">💊</span>Médoc</div>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" value="2026-03-05"></div>
-      <div class="form-group"><label class="form-label">Heure</label><input type="time" class="form-input" value="14:30"></div>
+
+    <!-- SEIN selector — visible only for tétée -->
+    <div class="form-group" id="sein-group">
+      <label class="form-label">Sein</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button id="btn-sein-g" onclick="selectSein('gauche')"
+          style="padding:14px;border-radius:16px;border:2px solid rgba(255,154,139,0.4);background:linear-gradient(135deg,rgba(255,154,139,0.15),rgba(255,106,136,0.08));font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:#CC4060;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px">
+          ◀ Gauche
+        </button>
+        <button id="btn-sein-d" onclick="selectSein('droit')"
+          style="padding:14px;border-radius:16px;border:2px solid rgba(167,139,250,0.4);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(124,110,245,0.08));font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:#7C6EF5;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px">
+          Droit ▶
+        </button>
+      </div>
     </div>
-    <div class="form-group"><label class="form-label">Durée (min) ou valeur</label><input type="text" class="form-input" placeholder="ex : 15 min ou 37.2°C"></div>
-    <div class="form-group"><label class="form-label">Note (optionnel)</label><input type="text" class="form-input" placeholder="Observations..."></div>
+
+    <!-- Date + Heure début -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" id="log-date" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Heure début</label>
+        <input type="time" id="log-heure" class="form-input">
+      </div>
+    </div>
+
+    <!-- Heure de FIN — visible pour tétée et sommeil -->
+    <div class="form-group" id="fin-group">
+      <label class="form-label">Heure fin <span style="font-weight:600;color:var(--text-light)">(optionnel — saisie a posteriori)</span></label>
+      <div class="form-row" style="margin-bottom:0">
+        <div class="form-group" style="margin-bottom:0">
+          <input type="date" id="log-date-fin" class="form-input">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <input type="time" id="log-heure-fin" class="form-input">
+        </div>
+      </div>
+    </div>
+
+    <!-- Valeur (température, poids, etc.) — masqué pour tétée -->
+    <div class="form-group" id="valeur-group" style="display:none">
+      <label class="form-label">Valeur</label>
+      <input type="text" id="log-valeur" class="form-input" placeholder="ex : 37.2°C / 3.620 kg">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Note (optionnel)</label>
+      <input type="text" id="log-note" class="form-input" placeholder="Observations...">
+    </div>
+
     <div class="modal-btns">
       <button class="btn-confirm" onclick="saveLog()">✓ Enregistrer</button>
       <button class="btn-cancel" onclick="closeModal()">Annuler</button>
@@ -1930,15 +1985,140 @@ function stopChrono() {
 }
 
 /* ===== MODAL ===== */
-function openModal(type) { document.getElementById('modal').classList.add('open'); }
-function closeModal()     { document.getElementById('modal').classList.remove('open'); }
+let _selectedSein = 'gauche'; // default
+
+function openModal(type) {
+  // Set default date/time to now
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const timeStr = now.toTimeString().slice(0,5);
+  const di = document.getElementById('log-date');
+  const hi = document.getElementById('log-heure');
+  const dfi = document.getElementById('log-date-fin');
+  const hfi = document.getElementById('log-heure-fin');
+  if (di) di.value = dateStr;
+  if (hi) hi.value = timeStr;
+  if (dfi) dfi.value = dateStr;
+  if (hfi) hfi.value = '';
+
+  // Pre-select type if passed
+  if (type) {
+    const btn = document.querySelector(`.type-btn[data-type="${type}"]`);
+    if (btn) {
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    }
+  }
+  _updateModalFields();
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
 function selType(el) {
   el.closest('.type-grid').querySelectorAll('.type-btn').forEach(b => b.classList.remove('sel'));
   el.classList.add('sel');
+  _updateModalFields();
 }
+
+function _updateModalFields() {
+  const sel = document.querySelector('.type-btn.sel');
+  const type = sel ? sel.dataset.type : 'tetee';
+  const seinGroup  = document.getElementById('sein-group');
+  const finGroup   = document.getElementById('fin-group');
+  const valGroup   = document.getElementById('valeur-group');
+  const logValeur  = document.getElementById('log-valeur');
+
+  // Sein visible for tétée only
+  if (seinGroup) seinGroup.style.display = (type === 'tetee') ? 'block' : 'none';
+
+  // Fin visible for tétée + sommeil
+  if (finGroup) finGroup.style.display = (type === 'tetee' || type === 'sommeil') ? 'block' : 'none';
+
+  // Valeur visible for temperature, mesure, pleurs, regurgi, medoc
+  const showVal = ['temperature','mesure','pleurs','regurgi','medoc'].includes(type);
+  if (valGroup) valGroup.style.display = showVal ? 'block' : 'none';
+
+  // Update placeholder
+  if (logValeur) {
+    const placeholders = {
+      temperature: 'ex : 37.5',
+      mesure: 'ex : 3.620 kg / 52 cm',
+      pleurs: 'ex : 15 min',
+      regurgi: 'ex : légère · 5 ml',
+      medoc: 'ex : Doliprane 2.5 ml'
+    };
+    logValeur.placeholder = placeholders[type] || '';
+  }
+}
+
+function selectSein(sein) {
+  _selectedSein = sein;
+  const bg = document.getElementById('btn-sein-g');
+  const bd = document.getElementById('btn-sein-d');
+  if (!bg || !bd) return;
+  if (sein === 'gauche') {
+    bg.style.borderColor = '#FF9A8B';
+    bg.style.background  = 'linear-gradient(135deg,rgba(255,154,139,0.35),rgba(255,106,136,0.2))';
+    bg.style.boxShadow   = '0 4px 14px rgba(255,106,136,0.25)';
+    bd.style.borderColor = 'rgba(167,139,250,0.4)';
+    bd.style.background  = 'linear-gradient(135deg,rgba(167,139,250,0.15),rgba(124,110,245,0.08))';
+    bd.style.boxShadow   = 'none';
+  } else {
+    bd.style.borderColor = '#A78BFA';
+    bd.style.background  = 'linear-gradient(135deg,rgba(167,139,250,0.35),rgba(124,110,245,0.2))';
+    bd.style.boxShadow   = '0 4px 14px rgba(124,110,245,0.25)';
+    bg.style.borderColor = 'rgba(255,154,139,0.4)';
+    bg.style.background  = 'linear-gradient(135deg,rgba(255,154,139,0.15),rgba(255,106,136,0.08))';
+    bg.style.boxShadow   = 'none';
+  }
+}
+
 function saveLog() {
+  const sel   = document.querySelector('.type-btn.sel');
+  const type  = sel ? sel.dataset.type : 'tetee';
+  const date  = document.getElementById('log-date')?.value || '';
+  const heure = document.getElementById('log-heure')?.value || '';
+  const dateFin  = document.getElementById('log-date-fin')?.value  || '';
+  const heureFin = document.getElementById('log-heure-fin')?.value || '';
+  const valeur   = document.getElementById('log-valeur')?.value || '';
+  const note     = document.getElementById('log-note')?.value || '';
+
+  if (!date || !heure) { showToast('⚠️ Remplis la date et l'heure'); return; }
+
+  const debutISO = date + 'T' + heure + ':00';
+  const finISO   = (dateFin && heureFin) ? (dateFin + 'T' + heureFin + ':00') : null;
+
+  // Compute duration in minutes if fin provided
+  let dureeMin = null;
+  if (finISO) {
+    dureeMin = Math.round((new Date(finISO) - new Date(debutISO)) / 60000);
+    if (dureeMin < 0) { showToast('⚠️ Heure de fin avant heure de début'); return; }
+  }
+
+  if (type === 'tetee') {
+    dbSaveTetee(_selectedSein, debutISO, dureeMin, note || null);
+  } else if (type === 'sommeil') {
+    dbSaveSommeil(debutISO, finISO, note || null);
+  } else if (type === 'couche') {
+    dbSaveCouche('mixte', null, 'normal', debutISO, note || null);
+  } else if (type === 'temperature') {
+    if (!valeur) { showToast('⚠️ Saisis la température'); return; }
+    dbSaveTemp(valeur, 'Rectale (référence)', debutISO);
+  } else if (type === 'mesure') {
+    if (!valeur) { showToast('⚠️ Saisis la valeur'); return; }
+    const kg = parseFloat(valeur);
+    if (!isNaN(kg)) dbSavePoids(kg, null, debutISO);
+    else showToast('⚠️ Valeur invalide');
+  } else {
+    showToast('✓ Activité enregistrée');
+  }
+
+  // Reset form
+  if (document.getElementById('log-note')) document.getElementById('log-note').value = '';
+  if (document.getElementById('log-valeur')) document.getElementById('log-valeur').value = '';
+  if (document.getElementById('log-heure-fin')) document.getElementById('log-heure-fin').value = '';
   closeModal();
-  showToast('✓ Activité enregistrée avec succès');
 }
 
 /* ===== TOAST ===== */
@@ -2062,7 +2242,7 @@ function drawWeightChart() {
   const pl=38, pr=14, pt=16, pb=28;
   const cW=W-pl-pr, cH=H-pt-pb;
   const minY=2.5, maxY=4.5;
-  const data=[3.59,3.30,3.15]; // naissance, J+1, J+2
+  const data=[3.59,3.39,3.30,3.32]; // naissance J0, J1, J2, J3
   const p25=[2.9,2.9,2.9];
   const p75=[4.0,4.0,4.0];
   const n=data.length;
@@ -2483,7 +2663,8 @@ const TEMP_ZONES = [
 function getTempZone(t) { return TEMP_ZONES.find(z=>t>=z.min&&t<=z.max)||TEMP_ZONES[2]; }
 
 let tempData = [
-  {id:'t01',val:36.6,method:'Rectale (référence)',time:'14:00',date:'3 mars 2026', dateObj:new Date(2026,2,3,14,0) },
+  {id:'t01',val:37.6,method:'Axillaire',           time:'07:30',date:'3 mars 2026', dateObj:new Date(2026,2,3,7,30) },
+  {id:'t01b',val:37.4,method:'Rectale (référence)', time:'09:00',date:'3 mars 2026', dateObj:new Date(2026,2,3,9,0) },
   {id:'t02',val:37.1,method:'Rectale (référence)',time:'08:30',date:'5 mars 2026', dateObj:new Date(2026,2,5,8,30) },
   {id:'t03',val:37.2,method:'Rectale (référence)',time:'11:00',date:'5 mars 2026', dateObj:new Date(2026,2,5,11,0) },
   {id:'t04',val:37.4,method:'Frontale',           time:'15:00',date:'5 mars 2026', dateObj:new Date(2026,2,5,15,0) },
@@ -2914,7 +3095,292 @@ window.addEventListener('load', () => {
   checkAutoDark();
   seedShop();
   drawTempChart();
+  initSync();
 });
+
+
+/* ============================================================
+   HILAL — SUPABASE SYNC TEMPS RÉEL
+   ============================================================ */
+
+const SUPA_URL = 'https://zlovoadlbbtygdbquxdc.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpsb3ZvYWRsYmJ0eWdkYnF1eGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3OTAzNDksImV4cCI6MjA4ODM2NjM0OX0.Iy1ZhwjS7PLHOTWv6WF7Okmg9ve2cZ4YcN75T2PjSdA';
+let sb = null;
+let syncStatus = 'connecting'; // connecting | online | offline
+
+function initSupabase() {
+  try {
+    sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+    setSyncStatus('online');
+    loadAllData();
+    subscribeRealtime();
+  } catch(e) {
+    console.error('Supabase init error:', e);
+    setSyncStatus('offline');
+  }
+}
+
+function setSyncStatus(status) {
+  syncStatus = status;
+  const dots = document.querySelectorAll('.live-dot');
+  const labels = document.querySelectorAll('#sync-label');
+  dots.forEach(d => {
+    d.style.background = status === 'online' ? '#84FAB0'
+                       : status === 'connecting' ? '#F9CA24'
+                       : '#FF6A88';
+  });
+  labels.forEach(l => {
+    l.textContent = status === 'online' ? '2 appareils connectés · sync active'
+                  : status === 'connecting' ? 'Connexion...'
+                  : 'Hors ligne';
+  });
+}
+
+/* ── LOAD ALL DATA FROM DB ───────────────────────────────── */
+async function loadAllData() {
+  await Promise.all([
+    loadTetes(),
+    loadSommeil(),
+    loadCouches(),
+    loadPoids(),
+    loadTemperatures()
+  ]);
+}
+
+async function loadTetes() {
+  if (!sb) return;
+  const { data, error } = await sb.from('tetes')
+    .select('*').order('heure', { ascending: false }).limit(50);
+  if (error) { console.error('tetes load:', error); return; }
+  if (data && data.length) renderTetesLog(data);
+}
+
+async function loadSommeil() {
+  if (!sb) return;
+  const { data, error } = await sb.from('sommeil')
+    .select('*').order('debut', { ascending: false }).limit(20);
+  if (error) { console.error('sommeil load:', error); return; }
+  if (data && data.length) renderSommeilLog(data);
+}
+
+async function loadCouches() {
+  if (!sb) return;
+  const { data, error } = await sb.from('couches')
+    .select('*').order('heure', { ascending: false }).limit(50);
+  if (error) { console.error('couches load:', error); return; }
+  if (data && data.length) renderCouchesLog(data);
+}
+
+async function loadPoids() {
+  if (!sb) return;
+  const { data, error } = await sb.from('poids')
+    .select('*').order('heure', { ascending: true });
+  if (error) { console.error('poids load:', error); return; }
+  if (data && data.length) renderPoidsLog(data);
+}
+
+async function loadTemperatures() {
+  if (!sb) return;
+  const { data, error } = await sb.from('temperatures')
+    .select('*').order('heure', { ascending: true }).limit(30);
+  if (error) { console.error('temp load:', error); return; }
+  if (data && data.length) {
+    tempData = data.map(r => ({
+      id: r.id,
+      val: parseFloat(r.valeur),
+      method: r.methode || 'Rectale (référence)',
+      time: new Date(r.heure).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),
+      date: new Date(r.heure).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}),
+      dateObj: new Date(r.heure)
+    }));
+    drawTempChart();
+  }
+}
+
+/* ── SAVE FUNCTIONS ─────────────────────────────────────── */
+async function dbSaveTetee(sein, heure, duree, note) {
+  if (!sb) return;
+  const { error } = await sb.from('tetes').insert({
+    heure: heure || new Date().toISOString(),
+    sein, duree_min: duree || null, note: note || null
+  });
+  if (error) { console.error('save tétée:', error); showToast('⚠️ Erreur sync'); }
+  else { showToast('🍼 Tétée enregistrée et synchronisée'); loadTetes(); }
+}
+
+async function dbSaveCouche(type, couleur, quantite, heure, note) {
+  if (!sb) return;
+  const { error } = await sb.from('couches').insert({
+    heure: heure || new Date().toISOString(),
+    type, couleur: couleur || null,
+    quantite: quantite || 'normal', note: note || null
+  });
+  if (error) { console.error('save couche:', error); showToast('⚠️ Erreur sync'); }
+  else { showToast('🧷 Couche enregistrée et synchronisée'); loadCouches(); }
+}
+
+async function dbSaveSommeil(debut, fin, note) {
+  if (!sb) return;
+  const { error } = await sb.from('sommeil').insert({
+    debut: debut || new Date().toISOString(),
+    fin: fin || null, note: note || null
+  });
+  if (error) { console.error('save sommeil:', error); showToast('⚠️ Erreur sync'); }
+  else { showToast('😴 Sommeil enregistré et synchronisé'); loadSommeil(); }
+}
+
+async function dbSavePoids(valeur_kg, taille_cm, heure) {
+  if (!sb) return;
+  const { error } = await sb.from('poids').insert({
+    heure: heure || new Date().toISOString(),
+    valeur_kg: parseFloat(valeur_kg),
+    taille_cm: taille_cm ? parseFloat(taille_cm) : null
+  });
+  if (error) { console.error('save poids:', error); showToast('⚠️ Erreur sync'); }
+  else { showToast('⚖️ Poids enregistré et synchronisé'); loadPoids(); }
+}
+
+async function dbSaveTemp(valeur, methode, heure) {
+  if (!sb) return;
+  const { error } = await sb.from('temperatures').insert({
+    heure: heure || new Date().toISOString(),
+    valeur: parseFloat(valeur), methode: methode || null
+  });
+  if (error) { console.error('save temp:', error); showToast('⚠️ Erreur sync'); }
+  else { showToast('🌡️ Température enregistrée et synchronisée'); loadTemperatures(); }
+}
+
+/* ── REALTIME SUBSCRIPTION ──────────────────────────────── */
+function subscribeRealtime() {
+  if (!sb) return;
+  const tables = ['tetes','sommeil','couches','poids','temperatures'];
+  tables.forEach(table => {
+    sb.channel('hilal-' + table)
+      .on('postgres_changes', { event: '*', schema: 'public', table }, payload => {
+        showToast('🔄 Sync · ' + (payload.new?.heure ? 
+          new Date(payload.new.heure).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : 
+          'mise à jour'));
+        loadAllData();
+      })
+      .subscribe(status => {
+        if (status === 'SUBSCRIBED') setSyncStatus('online');
+        if (status === 'CHANNEL_ERROR') setSyncStatus('offline');
+      });
+  });
+}
+
+/* ── RENDER FUNCTIONS ───────────────────────────────────── */
+function fmtHeure(iso) {
+  return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+}
+function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+}
+
+function renderTetesLog(data) {
+  // Update alimentation log list
+  const el = document.querySelector('#s-tetes .log-list') || document.querySelector('#s-alimentation .log-list');
+  if (!el) return;
+  // Update dashboard log too
+  const dash = document.querySelector('#s-dashboard .log-list');
+
+  const html = data.slice(0,10).map(r => {
+    const sein = r.sein === 'gauche' ? '◀' : r.sein === 'droit' ? '▶' : '🍼';
+    const bg = r.sein === 'gauche' ? 'var(--g-salmon)' : r.sein === 'droit' ? 'linear-gradient(135deg,#C4A8F8,#9880D8)' : 'var(--g-blue)';
+    const label = r.sein === 'gauche' ? 'Sein gauche' : r.sein === 'droit' ? 'Sein droit' : 'Biberon';
+    return `<div class="log-item"><div class="log-pill" style="background:${bg}">${sein}</div>
+      <div class="log-info"><div class="log-main">${label}</div>
+      <div class="log-sub">${fmtDate(r.heure)}${r.duree_min ? ' · ' + r.duree_min + ' min' : ''}${r.note ? ' · ' + r.note : ''}</div></div>
+      <div class="log-time">${fmtHeure(r.heure)}</div></div>`;
+  }).join('');
+
+  if (el) el.innerHTML = html;
+
+  // Update dashboard activity
+  if (dash) {
+    const last4 = data.slice(0,4);
+    dash.innerHTML = last4.map(r => {
+      const sein = r.sein === 'gauche' ? '◀ Sein gauche' : r.sein === 'droit' ? '▶ Sein droit' : '🍼 Biberon';
+      const bg = r.sein === 'gauche' ? 'var(--g-salmon)' : 'linear-gradient(135deg,#C4A8F8,#9880D8)';
+      return `<div class="log-item"><div class="log-pill" style="background:${bg}">🍼</div>
+        <div class="log-info"><div class="log-main">Tétée ${r.sein}</div>
+        <div class="log-sub">${fmtDate(r.heure)}${r.note ? ' · ' + r.note : ''}</div></div>
+        <div class="log-time">${fmtHeure(r.heure)}</div></div>`;
+    }).join('');
+  }
+
+  // Update tile
+  const tile = document.querySelector('#s-tetes .tile-val') || document.querySelector('#s-alimentation .tile-val');
+  if (tile) tile.textContent = data.length;
+}
+
+function renderCouchesLog(data) {
+  const el = document.querySelector('.diaper-timeline-track');
+  // Update tile counts
+  const wetCount  = data.filter(r => r.type === 'mouillée' || r.type === 'mixte').length;
+  const dirtCount = data.filter(r => r.type === 'souillée' || r.type === 'mixte').length;
+  const tiles = document.querySelectorAll('#s-couches .tile-val');
+  if (tiles[0]) tiles[0].textContent = wetCount;
+  if (tiles[1]) tiles[1].textContent = dirtCount;
+  if (tiles[2]) tiles[2].textContent = data.length;
+}
+
+function renderSommeilLog(data) {
+  if (!data.length) return;
+  const last = data[0];
+  const debut = new Date(last.debut);
+  const fin   = last.fin ? new Date(last.fin) : null;
+  const dureeMs = fin ? fin - debut : 0;
+  const dureeH  = Math.floor(dureeMs / 3600000);
+  const dureeM  = Math.floor((dureeMs % 3600000) / 60000);
+  const tiles = document.querySelectorAll('#s-sommeil .tile-val');
+  if (tiles[0]) { tiles[0].textContent = dureeH; }
+  if (tiles[2]) { tiles[2].textContent = dureeH + 'h' + (dureeM>0?dureeM:''); }
+}
+
+function renderPoidsLog(data) {
+  if (!data.length) return;
+  // Update weight chart
+  const chartData = data.map(r => parseFloat(r.valeur_kg));
+  const chartLabels = data.map(r => fmtDate(r.heure));
+  // Update in drawWeightChart by patching data
+  window._weightData = chartData;
+  window._weightLabels = chartLabels;
+  drawWeightChart();
+
+  // Update log list in croissance
+  const el = document.querySelector('#s-croissance .log-list');
+  if (!el) return;
+  el.innerHTML = data.slice().reverse().map(r => {
+    const pct = data[0] ? (((parseFloat(r.valeur_kg) - parseFloat(data[0].valeur_kg)) / parseFloat(data[0].valeur_kg)) * 100).toFixed(1) : null;
+    return `<div class="log-item"><div class="log-pill" style="background:var(--g-mint)">⚖️</div>
+      <div class="log-info"><div class="log-main">${r.valeur_kg} kg${r.taille_cm ? ' · ' + r.taille_cm + ' cm' : ''}</div>
+      <div class="log-sub">${fmtDate(r.heure)}${r.note ? ' · ' + r.note : ''}</div></div>
+      ${pct ? '<div class="log-time" style="font-size:10px;font-weight:800">' + (pct > 0 ? '+' : '') + pct + '%</div>' : ''}</div>`;
+  }).join('');
+}
+
+/* ── QUICK LOG MODAL ────────────────────────────────────── */
+// Override saveTempMeasure to also save to Supabase
+const _origSaveTemp = saveTempMeasure;
+function saveTempMeasure() {
+  const v = parseFloat(document.getElementById('new-temp-val').value);
+  const time = document.getElementById('new-temp-time').value;
+  const method = document.getElementById('new-temp-method').value;
+  const dateStr = document.getElementById('new-temp-date').value;
+  if (isNaN(v)) return;
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const [h,mn] = time.split(':').map(Number);
+  const iso = new Date(y,m-1,d,h,mn).toISOString();
+  dbSaveTemp(v, method, iso);
+  _origSaveTemp();
+}
+
+/* ── INIT ───────────────────────────────────────────────── */
+// Called from window.load
+function initSync() {
+  initSupabase();
+}
 
 // Draw charts when section becomes visible via ResizeObserver if needed
 document.querySelector('#s-sommeil .card')?.addEventListener('click', ()=>{});
