@@ -121,12 +121,15 @@ body {
   box-shadow: 4px 0 30px rgba(100,80,180,0.06);
   transition: background 0.4s ease, transform 0.3s ease;
   scrollbar-width: none;
+  transform: translateX(-100%);
+}
+@media(min-width:769px) {
+  .main { padding:24px 28px; padding-bottom:80px; }
 }
 .sidebar::-webkit-scrollbar { display:none; }
 
 /* Mobile sidebar hidden */
 @media(max-width:768px) {
-  .sidebar { transform:translateX(-100%); }
   .sidebar.open { transform:translateX(0); box-shadow: 4px 0 40px rgba(0,0,0,0.2); }
 }
 
@@ -247,7 +250,7 @@ body {
 
 /* ============================================================ TOPBAR */
 .topbar {
-  position:fixed; top:0; left:var(--sidebar-w); right:0; height:var(--topbar-h);
+  position:fixed; top:0; left:0; right:0; height:var(--topbar-h);
   background:rgba(242,243,250,0.85);
   backdrop-filter:blur(20px) saturate(1.4);
   border-bottom:1.5px solid rgba(167,139,250,0.10);
@@ -258,7 +261,7 @@ body {
 }
 [data-theme="dark"] .topbar { background:rgba(26,27,46,0.88); border-bottom-color:rgba(255,255,255,0.06); }
 
-@media(max-width:768px) { .topbar { left:0; padding:0 16px; } }
+@media(max-width:768px) { .topbar { padding:0 16px; } }
 
 .topbar-left h1 { font-size:20px; font-weight:900; letter-spacing:-0.4px; }
 .topbar-left p  { font-size:11px; color:var(--text-light); font-weight:600; margin-top:1px; }
@@ -308,13 +311,14 @@ body {
 
 /* ============================================================ MAIN */
 .main {
-  margin-left:var(--sidebar-w);
+  margin-left:0;
   margin-top:var(--topbar-h);
-  padding:24px 28px;
+  padding:16px;
   min-height:calc(100vh - var(--topbar-h));
   transition: margin-left 0.3s;
+  padding-bottom:80px;
 }
-@media(max-width:768px) { .main { margin-left:0; padding:16px; } }
+@media(max-width:768px) { }
 
 /* ============================================================ SECTIONS */
 .section { display:none; }
@@ -907,7 +911,7 @@ canvas { display:block; }
 ::-webkit-scrollbar-thumb { background:rgba(167,139,250,0.25); border-radius:10px; }
 </style>
   <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
 </head>
 <body>
 
@@ -929,6 +933,9 @@ canvas { display:block; }
       <span style="font-size:16px">🌙</span>
       <span style="font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:white;letter-spacing:-0.2px">HILAL</span>
     </button>
+    <div id="topbar-avatar" onclick="switchProfile(activeProfile === 'papa' ? 'maman' : 'papa')"
+      style="width:34px;height:34px;border-radius:50%;background:var(--g-blue);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:2px solid rgba(161,196,253,0.5);box-shadow:0 3px 10px rgba(123,167,247,0.3);transition:all 0.2s;flex-shrink:0"
+      title="Changer de profil">👨</div>
     <div class="topbar-left">
       <h1 id="topbar-title">Vue d'ensemble</h1>
       <p id="topbar-date">Jeudi 5 mars 2026</p>
@@ -940,72 +947,219 @@ canvas { display:block; }
       <span class="live-dot"></span>
       <span id="topbar-chrono-val">00:00</span>
     </div>
-    <div class="icon-btn" onclick="nav('settings')">🔔<div class="notif-dot"></div></div>
+    <div class="icon-btn" onclick="nav('settings')" title="Paramètres">⚙️</div>
     <button class="btn-add" onclick="openModal()">＋ Enregistrer</button>
   </div>
 </header>
+
+<!-- ============================================================ SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ============================================================ SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <div class="logo-icon">🌙</div>
+    <div>
+      <div class="logo-name">Hilal</div>
+      <div class="logo-sub">né le 3 mars 2026</div>
+    </div>
+  </div>
+
+  <!-- Sélecteur de profil -->
+  <div id="profile-switcher" style="margin-bottom:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(255,154,139,0.06));border-radius:var(--r-sm);border:1.5px solid rgba(167,139,250,0.2)">
+    <div style="font-size:10px;font-weight:900;color:var(--text-light);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Profil actif</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <button id="profile-papa" onclick="switchProfile('papa')"
+        style="padding:10px 6px;border-radius:12px;border:2px solid rgba(161,196,253,0.6);background:linear-gradient(135deg,rgba(161,196,253,0.25),rgba(123,167,247,0.15));font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:#4480CC;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:20px">👨</span>
+        <span>Papa</span>
+      </button>
+      <button id="profile-maman" onclick="switchProfile('maman')"
+        style="padding:10px 6px;border-radius:12px;border:2px solid rgba(167,139,250,0.2);background:transparent;font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:var(--text-mid);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:20px">👩</span>
+        <span>Maman</span>
+      </button>
+    </div>
+    <div id="profile-label" style="text-align:center;margin-top:8px;font-size:10px;font-weight:800;color:var(--purple-deep)">👨 Papa connecté</div>
+  </div>
+
+  <!-- Baby card -->
+  <div class="baby-card-side" onclick="nav('croissance');closeSidebar()">
+    <div class="bcs-name">Hilal 🌙</div>
+    <div class="bcs-age">3 jours · né le 3 mars à 06h28</div>
+    <div class="bcs-stats">
+      <div class="bcs-stat"><div class="bcs-val">3 320 g</div><div class="bcs-lbl">Poids J+3</div></div>
+      <div class="bcs-stat"><div class="bcs-val">50 cm</div><div class="bcs-lbl">Taille</div></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-sec">Principal</div>
+  <div class="nav-item active" id="nav-dashboard" onclick="nav('dashboard');closeSidebar()">
+    <div class="nav-icon">🏠</div>Vue d'ensemble
+  </div>
+  <div class="nav-item" id="nav-tetes" onclick="nav('tetes');closeSidebar()">
+    <div class="nav-icon">🍼</div>Tétées & Repas
+    <span class="nav-badge">2</span>
+  </div>
+  <div class="nav-item" id="nav-sommeil" onclick="nav('sommeil');closeSidebar()">
+    <div class="nav-icon">😴</div>Sommeil
+  </div>
+  <div class="nav-item" id="nav-couches" onclick="nav('couches');closeSidebar()">
+    <div class="nav-icon">🧷</div>Couches
+    <span class="nav-badge">1</span>
+  </div>
+  <div class="nav-item" id="nav-sante" onclick="nav('sante');closeSidebar()">
+    <div class="nav-icon">🌡️</div>Santé & Symptômes
+  </div>
+
+  <div class="nav-sec">Suivi</div>
+  <div class="nav-item" id="nav-croissance" onclick="nav('croissance');closeSidebar()">
+    <div class="nav-icon">📈</div>Croissance
+  </div>
+  <div class="nav-item" id="nav-vaccins" onclick="nav('vaccins');closeSidebar()">
+    <div class="nav-icon">💉</div>Vaccins
+  </div>
+  <div class="nav-item" id="nav-rdv" onclick="nav('rdv');closeSidebar()">
+    <div class="nav-icon">📅</div>Rendez-vous
+  </div>
+  <div class="nav-item" id="nav-calendrier" onclick="nav('calendrier');closeSidebar()">
+    <div class="nav-icon">📆</div>Calendrier
+  </div>
+
+  <div class="nav-sec">Famille & Plus</div>
+  <div class="nav-item" id="nav-conseils" onclick="nav('conseils');closeSidebar()">
+    <div class="nav-icon">💡</div>Conseils
+  </div>
+  <div class="nav-item" id="nav-journal" onclick="nav('journal');closeSidebar()">
+    <div class="nav-icon">📖</div>Journal
+  </div>
+  <div class="nav-item" id="nav-famille" onclick="nav('famille');closeSidebar()">
+    <div class="nav-icon">👨‍👩‍👦</div>Ma famille
+  </div>
+  <div class="nav-item" id="nav-diversification" onclick="nav('diversification');closeSidebar()">
+    <div class="nav-icon">🥦</div>Diversification
+  </div>
+  <div class="nav-item" id="nav-courses" onclick="nav('courses');closeSidebar()">
+    <div class="nav-icon">🛒</div>Courses
+  </div>
+  <div class="nav-item" id="nav-faq" onclick="nav('faq');closeSidebar()">
+    <div class="nav-icon">❓</div>FAQ
+  </div>
+
+  <!-- Sync status -->
+  <div style="margin-top:auto;padding-top:12px;border-top:1.5px solid rgba(167,139,250,0.10)">
+    <div class="live-badge" style="width:100%;justify-content:center;padding:8px">
+      <div class="live-dot"></div>
+      <span id="sync-label">Connexion...</span>
+    </div>
+    <div class="nav-item" id="nav-settings" onclick="nav('settings');closeSidebar()" style="margin-top:4px">
+      <div class="nav-icon">⚙️</div>Paramètres
+    </div>
+  </div>
+
+</div>
 
 <!-- ============================================================ MAIN CONTENT -->
 <main class="main">
 
 <!-- ===== DASHBOARD ===== -->
 <div class="section active" id="s-dashboard">
-  <div class="alert-banner" style="background:linear-gradient(135deg,rgba(132,250,176,0.12),rgba(94,194,183,0.06));border-color:rgba(94,194,183,0.3);color:#2A8A60">✅ <div><strong>Reprise de poids J+3 :</strong> 3,320 g (+20 g vs J+2) — bonne nouvelle ! Perte cumulée de 270 g soit −7,5% du poids de naissance. Dans les normes OMS ✓</div></div>
 
-  <!-- Quick actions -->
-  <div class="g4" style="margin-bottom:20px">
-    <div class="tile" style="background:var(--g-salmon)" onclick="startChrono('tete')">
-      <span class="tile-emoji">🍼</span>
-      <div class="tile-lbl">Tétée</div>
-      <div class="tile-sub">À 03h00 · Sein droit</div>
-      <div class="tile-badge">▶ Démarrer chrono</div>
+  <!-- BANNIÈRE POIDS -->
+  <div class="alert-banner" style="background:linear-gradient(135deg,rgba(132,250,176,0.12),rgba(94,194,183,0.06));border-color:rgba(94,194,183,0.3);color:#2A8A60">✅ <div><strong>Reprise de poids J+3 :</strong> 3 320 g (+20 g vs J+2) — bonne nouvelle ! Perte cumulée −7,5% · Dans les normes OMS ✓</div></div>
+
+  <!-- ══ GRILLE PRINCIPALE ══ -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+
+    <!-- ① URINES — prioritaire, alerte active -->
+    <div id="att-urines" onclick="openModal('couche')" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(161,196,253,0.18),rgba(123,167,247,0.10));border:2px solid rgba(161,196,253,0.35)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">💧</span>
+        <span id="att-urines-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(161,196,253,0.3);color:#4480CC">0 / 4–6</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#4480CC;margin-bottom:3px">Urines</div>
+      <div id="att-urines-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">Objectif : 4–6 / jour</div>
+      <div style="margin-top:8px;height:4px;border-radius:4px;background:rgba(161,196,253,0.15);overflow:hidden"><div id="att-urines-fill" style="height:100%;border-radius:4px;background:var(--g-blue);width:0%;transition:width 0.6s"></div></div>
     </div>
-    <div class="tile" style="background:var(--g-purple)" onclick="startChrono('sommeil')">
-      <span class="tile-emoji">😴</span>
-      <div class="tile-lbl">Sommeil</div>
-      <div class="tile-sub">Nuit 5 mars · 23h00 → 02h45</div>
-      <div class="tile-badge">3h45 · 2 éveils</div>
+
+    <!-- ② TÉTÉES — prioritaire, alerte active -->
+    <div id="att-tetes" onclick="openModal('tetee')" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(255,154,139,0.18),rgba(255,106,136,0.10));border:2px solid rgba(255,154,139,0.35)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">🍼</span>
+        <span id="att-tetes-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(255,154,139,0.3);color:#CC4060">2 / 8–12</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#CC4060;margin-bottom:3px">Tétées</div>
+      <div id="att-tetes-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">Objectif : 8–12 / 24h</div>
+      <div style="margin-top:8px;height:4px;border-radius:4px;background:rgba(255,154,139,0.15);overflow:hidden"><div id="att-tetes-fill" style="height:100%;border-radius:4px;background:var(--g-salmon);width:16%;transition:width 0.6s"></div></div>
     </div>
-    <div class="tile" style="background:var(--g-yellow); color:#5A3A00" onclick="openModal('couche')">
-      <span class="tile-emoji">🧷</span>
-      <div class="tile-lbl">Couche</div>
-      <div class="tile-sub">À 02h20 · Vertes foncées</div>
-      <div class="tile-badge">+ Enregistrer</div>
+
+    <!-- ③ TONICITÉ — prioritaire, alerte active -->
+    <div id="att-tonique" onclick="logTonicite()" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(132,250,176,0.15),rgba(94,194,183,0.08));border:2px solid rgba(132,250,176,0.3)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">💪</span>
+        <span id="att-tonique-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(132,250,176,0.25);color:#2A9B8A">— évaluer</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#2A9B8A;margin-bottom:3px">Tonicité</div>
+      <div id="att-tonique-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">Évaluation quotidienne</div>
     </div>
-    <div class="tile" style="background:var(--g-mint); color:#1A4A40" onclick="openModal('mesure')">
-      <span class="tile-emoji">🌡️</span>
-      <div class="tile-lbl">Température</div>
-      <div class="tile-sub">37,2° ce matin</div>
-      <div class="tile-badge">+ Mesurer</div>
+
+    <!-- ④ VENTRE — prioritaire, alerte active -->
+    <div id="att-ventre" onclick="openVentreModal()" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(249,202,36,0.15),rgba(249,202,36,0.07));border:2px solid rgba(249,202,36,0.3)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">🤰</span>
+        <span id="att-ventre-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(249,202,36,0.2);color:#AA7800">— évaluer</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#AA7800;margin-bottom:3px">Ventre · Douleurs</div>
+      <div id="att-ventre-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">Gêne · douleur · dur</div>
     </div>
+
+    <!-- ⑤ SOMMEIL — optionnel, info seule -->
+    <div id="att-sommeil" onclick="nav('sommeil')" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(167,139,250,0.14),rgba(124,110,245,0.07));border:2px solid rgba(167,139,250,0.22)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">😴</span>
+        <span id="att-sommeil-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(167,139,250,0.2);color:#7C6EF5">3h45</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#7C6EF5;margin-bottom:3px">Sommeil</div>
+      <div id="att-sommeil-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">23h00 → 02h45 · 2 éveils</div>
+      <div style="margin-top:8px;height:4px;border-radius:4px;background:rgba(167,139,250,0.12);overflow:hidden"><div id="att-sommeil-fill" style="height:100%;border-radius:4px;background:var(--g-purple);width:25%;transition:width 0.6s"></div></div>
+    </div>
+
+    <!-- ⑥ TEMPÉRATURE — optionnel, info seule -->
+    <div id="att-temp" onclick="nav('sante')" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(132,250,176,0.12),rgba(94,194,183,0.06));border:2px solid rgba(132,250,176,0.22)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">🌡️</span>
+        <span id="att-temp-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(132,250,176,0.2);color:#2A9B8A">—</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#2A9B8A;margin-bottom:3px">Température</div>
+      <div id="att-temp-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">Pas encore mesurée</div>
+    </div>
+
+    <!-- ⑦ COUCHES — optionnel, info seule -->
+    <div id="att-couches" onclick="openModal('couche')" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(255,236,210,0.25),rgba(252,182,159,0.10));border:2px solid rgba(252,182,159,0.25)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">🧷</span>
+        <span id="att-couches-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(252,182,159,0.25);color:#C47A3A">1 couche</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#C47A3A;margin-bottom:3px">Couches</div>
+      <div id="att-couches-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">02h20 · Verte foncée · peu</div>
+    </div>
+
+    <!-- ⑧ ALIMENTS — optionnel, raccourci diversification -->
+    <div id="att-aliments" onclick="nav('diversification')" style="border-radius:20px;padding:15px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(132,250,176,0.12),rgba(84,200,140,0.06));border:2px solid rgba(84,200,140,0.22)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <span style="font-size:20px">🥦</span>
+        <span id="att-aliments-badge" style="font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;background:rgba(84,200,140,0.2);color:#2A7A5A">— aliments</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#2A7A5A;margin-bottom:3px">Aliments</div>
+      <div id="att-aliments-msg" style="font-size:10px;font-weight:700;color:var(--text-light);line-height:1.3">Suivi diversification</div>
+    </div>
+
   </div>
 
-  <!-- Stats -->
-  <div class="g3">
-    <div class="tile" style="background:var(--g-salmon)">
-      <span class="tile-emoji">🍼</span>
-      <div><span class="tile-val">2</span><span class="tile-unit"> tétées</span></div>
-      <div class="tile-lbl">Cette nuit</div>
-      <div class="tile-sub">22h40 sein G · 03h00 sein D</div>
-      <div class="tile-badge">Allaitement exclusif ✓</div>
-    </div>
-    <div class="tile" style="background:var(--g-purple)">
-      <span class="tile-emoji">🌙</span>
-      <div><span class="tile-val">3</span><span class="tile-unit">h45</span></div>
-      <div class="tile-lbl">Sommeil nuit</div>
-      <div class="tile-sub">23h00 → 02h45 · 2 micro-éveils</div>
-      <div class="tile-badge">OMS : 14–17h/j</div>
-    </div>
-    <div class="tile" style="background:var(--g-mint); color:#1A4A40">
-      <span class="tile-emoji">🧷</span>
-      <div><span class="tile-val">1</span><span class="tile-unit"> couche</span></div>
-      <div class="tile-lbl">Cette nuit</div>
-      <div class="tile-sub">02h20 · Vertes foncées · peu</div>
-      <div class="tile-badge">✓ Normal J+3</div>
-    </div>
-  </div>
-
-  <!-- ══ SUIVI DU POIDS ══ -->
+    <!-- ══ SUIVI DU POIDS ══ -->
   <div class="card" style="margin-bottom:18px">
     <div class="card-header">
       <div style="display:flex;align-items:center;gap:10px">
@@ -1079,6 +1233,50 @@ canvas { display:block; }
         <div style="font-size:9px;font-weight:700;color:#FF6A88">Seuil 10%</div>
         <div style="font-size:9px;font-weight:700;color:var(--text-light)">15%</div>
       </div>
+    </div>
+  </div>
+
+
+  <!-- ══ SUIVI DIVERSIFICATION ══ -->
+  <div class="card" style="margin-bottom:18px" id="dash-food-card">
+    <div class="card-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(140deg,#84FAB0,#2A9B8A);display:flex;align-items:center;justify-content:center;font-size:18px">🥦</div>
+        <div>
+          <div class="card-title">Diversification alimentaire</div>
+          <div class="card-sub" id="dash-food-sub">4 derniers jours · timeline</div>
+        </div>
+      </div>
+      <span class="card-link" onclick="nav('diversification')">Tout voir →</span>
+    </div>
+
+    <!-- Canvas timeline 4 jours -->
+    <div style="position:relative;width:100%;margin-bottom:14px">
+      <canvas id="dashFoodChart"></canvas>
+      <!-- Overlay HTML pour les aliments (icône + nom flottants) -->
+      <div id="dash-food-overlay" style="position:absolute;top:0;left:0;width:100%;pointer-events:none"></div>
+    </div>
+
+    <!-- Barre de progression par catégorie -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px" id="dash-food-cats"></div>
+
+    <!-- Résumé + bouton -->
+    <div style="background:var(--bg);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;gap:16px">
+        <div style="text-align:center">
+          <div style="font-size:18px;font-weight:900;background:var(--g-mint);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="dash-food-total">0</div>
+          <div style="font-size:9px;font-weight:800;color:var(--text-light)">total</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:18px;font-weight:900;background:var(--g-salmon);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="dash-food-loves">0</div>
+          <div style="font-size:9px;font-weight:800;color:var(--text-light)">😍 adorés</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:18px;font-weight:900;background:var(--g-yellow);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="dash-food-neutral">0</div>
+          <div style="font-size:9px;font-weight:800;color:var(--text-light)">😐 mitigés</div>
+        </div>
+      </div>
+      <button onclick="openDivModal()" style="padding:8px 14px;border-radius:20px;border:none;background:var(--g-mint);font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;color:#0A3A2A;cursor:pointer;white-space:nowrap">＋ Ajouter</button>
     </div>
   </div>
 
@@ -1898,15 +2096,222 @@ canvas { display:block; }
 
 </div>
 
+
+<!-- ===== DIVERSIFICATION ===== -->
+<div class="section" id="s-diversification">
+
+  <!-- Header stats -->
+  <div class="g3" style="margin-bottom:18px">
+    <div class="tile" style="background:var(--g-mint);color:#1A4A40">
+      <span class="tile-emoji">🥦</span>
+      <div><span class="tile-val" id="div-total">0</span><span class="tile-unit"> aliments</span></div>
+      <div class="tile-lbl">Découverts</div>
+      <div class="tile-badge">Catalogue Hilal</div>
+    </div>
+    <div class="tile" style="background:var(--g-salmon)">
+      <span class="tile-emoji">😍</span>
+      <div><span class="tile-val" id="div-loves">0</span></div>
+      <div class="tile-lbl">Adorés</div>
+      <div class="tile-badge">+ Aimés</div>
+    </div>
+    <div class="tile" style="background:var(--g-yellow);color:#5A3A00">
+      <span class="tile-emoji">🤔</span>
+      <div><span class="tile-val" id="div-neutral">0</span></div>
+      <div class="tile-lbl">Mitigés</div>
+      <div class="tile-badge">ou refusés</div>
+    </div>
+  </div>
+
+  <!-- Category filter -->
+  <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;overflow-x:auto;padding-bottom:4px">
+    <button class="cat-btn active" id="divcat-tous" onclick="filterDivCat('tous')">Tous</button>
+    <button class="cat-btn" id="divcat-legumes" onclick="filterDivCat('legumes')">🥦 Légumes</button>
+    <button class="cat-btn" id="divcat-fruits" onclick="filterDivCat('fruits')">🍎 Fruits</button>
+    <button class="cat-btn" id="divcat-feculents" onclick="filterDivCat('feculents')">🌾 Féculents</button>
+    <button class="cat-btn" id="divcat-proteines" onclick="filterDivCat('proteines')">🥩 Protéines</button>
+    <button class="cat-btn" id="divcat-laitiers" onclick="filterDivCat('laitiers')">🥛 Laitiers</button>
+    <button class="cat-btn" id="divcat-autres" onclick="filterDivCat('autres')">✨ Autres</button>
+  </div>
+
+  <div class="g2" style="align-items:start">
+    <!-- Liste historique -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Historique des goûts</div>
+        <button class="btn-add" style="font-size:11px;padding:8px 14px" onclick="openDivModal()">＋ Ajouter</button>
+      </div>
+      <!-- Search -->
+      <div style="position:relative;margin-bottom:12px">
+        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px">🔍</span>
+        <input type="text" id="div-search" class="form-input" placeholder="Rechercher un aliment..."
+          style="padding-left:36px" oninput="renderDivList()">
+      </div>
+      <div id="div-list" class="log-list"></div>
+      <div id="div-empty" style="text-align:center;padding:32px 16px;color:var(--text-light);font-size:13px;font-weight:700;display:none">
+        🌱 Aucun aliment encore goûté<br>
+        <span style="font-size:11px">Commence la diversification !</span>
+      </div>
+    </div>
+
+    <!-- Suggestions par catégorie -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🌟 Idées à goûter</div>
+      <div id="div-suggestions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ajout aliment -->
+<div class="modal-overlay" id="div-modal" onclick="if(event.target.id==='div-modal')closeDivModal()">
+  <div class="modal">
+    <div class="modal-title">🥦 Nouvel aliment goûté</div>
+
+    <div class="form-group">
+      <label class="form-label">Aliment</label>
+      <input type="text" id="div-aliment" class="form-input" placeholder="ex : Carotte, Pomme, Riz...">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Catégorie</label>
+      <div class="type-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="type-btn sel" data-divcat="legumes" onclick="selDivCat(this)"><span class="type-btn-icon">🥦</span>Légumes</div>
+        <div class="type-btn" data-divcat="fruits" onclick="selDivCat(this)"><span class="type-btn-icon">🍎</span>Fruits</div>
+        <div class="type-btn" data-divcat="feculents" onclick="selDivCat(this)"><span class="type-btn-icon">🌾</span>Féculents</div>
+        <div class="type-btn" data-divcat="proteines" onclick="selDivCat(this)"><span class="type-btn-icon">🥩</span>Protéines</div>
+        <div class="type-btn" data-divcat="laitiers" onclick="selDivCat(this)"><span class="type-btn-icon">🥛</span>Laitiers</div>
+        <div class="type-btn" data-divcat="autres" onclick="selDivCat(this)"><span class="type-btn-icon">✨</span>Autres</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Date</label>
+      <input type="date" id="div-date" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Réaction de Hilal</label>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:4px">
+        <button class="div-react-btn" data-reaction="adore" onclick="selDivReact(this)"
+          style="padding:12px 6px;border-radius:16px;border:2px solid rgba(132,250,176,0.4);background:rgba(132,250,176,0.1);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Nunito',sans-serif">
+          <span style="font-size:26px">😍</span>
+          <span style="font-size:9px;font-weight:900;color:#2A9B8A">Adore</span>
+        </button>
+        <button class="div-react-btn" data-reaction="aime" onclick="selDivReact(this)"
+          style="padding:12px 6px;border-radius:16px;border:2px solid rgba(132,250,176,0.3);background:rgba(132,250,176,0.07);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Nunito',sans-serif">
+          <span style="font-size:26px">😊</span>
+          <span style="font-size:9px;font-weight:900;color:#5EC2B7">Aime</span>
+        </button>
+        <button class="div-react-btn" data-reaction="neutre" onclick="selDivReact(this)"
+          style="padding:12px 6px;border-radius:16px;border:2px solid rgba(167,139,250,0.3);background:rgba(167,139,250,0.07);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Nunito',sans-serif">
+          <span style="font-size:26px">😐</span>
+          <span style="font-size:9px;font-weight:900;color:#7C6EF5">Neutre</span>
+        </button>
+        <button class="div-react-btn" data-reaction="naime-pas" onclick="selDivReact(this)"
+          style="padding:12px 6px;border-radius:16px;border:2px solid rgba(249,202,36,0.3);background:rgba(249,202,36,0.07);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Nunito',sans-serif">
+          <span style="font-size:26px">😒</span>
+          <span style="font-size:9px;font-weight:900;color:#AA7800">N'aime pas</span>
+        </button>
+        <button class="div-react-btn" data-reaction="deteste" onclick="selDivReact(this)"
+          style="padding:12px 6px;border-radius:16px;border:2px solid rgba(255,154,139,0.4);background:rgba(255,154,139,0.1);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Nunito',sans-serif">
+          <span style="font-size:26px">🤢</span>
+          <span style="font-size:9px;font-weight:900;color:#CC4060">Déteste</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Note (optionnel)</label>
+      <input type="text" id="div-note" class="form-input" placeholder="Observations, texture, quantité...">
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-confirm" onclick="saveDivFood()">✓ Enregistrer</button>
+      <button class="btn-cancel" onclick="closeDivModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ventre / Douleurs -->
+<div class="modal-overlay" id="ventre-modal" onclick="if(event.target.id==='ventre-modal')closeVentreModal()">
+  <div class="modal">
+    <div class="modal-title">🤰 Ventre & Douleurs</div>
+    <div class="form-group">
+      <label class="form-label">État du ventre</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="ventre-btn" data-v="souple" onclick="selVentre(this)"
+          style="padding:14px;border-radius:16px;border:2px solid rgba(132,250,176,0.4);background:rgba(132,250,176,0.1);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#2A9B8A;cursor:pointer;transition:all 0.2s">
+          😌 Souple — Normal
+        </button>
+        <button class="ventre-btn" data-v="ballonne" onclick="selVentre(this)"
+          style="padding:14px;border-radius:16px;border:2px solid rgba(249,202,36,0.3);background:rgba(249,202,36,0.07);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#AA7800;cursor:pointer;transition:all 0.2s">
+          😣 Ballonné
+        </button>
+        <button class="ventre-btn" data-v="dur" onclick="selVentre(this)"
+          style="padding:14px;border-radius:16px;border:2px solid rgba(255,154,139,0.4);background:rgba(255,154,139,0.1);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#CC4060;cursor:pointer;transition:all 0.2s">
+          😖 Dur — Consulter
+        </button>
+        <button class="ventre-btn" data-v="gene" onclick="selVentre(this)"
+          style="padding:14px;border-radius:16px;border:2px solid rgba(255,154,139,0.3);background:rgba(255,154,139,0.07);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#CC4060;cursor:pointer;transition:all 0.2s">
+          😟 Gêne / Douleur
+        </button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note (optionnel)</label>
+      <input type="text" id="ventre-note" class="form-input" placeholder="Observations...">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-confirm" onclick="saveVentre()">✓ Enregistrer</button>
+      <button class="btn-cancel" onclick="closeVentreModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tonicité -->
+<div class="modal-overlay" id="tonique-modal" onclick="if(event.target.id==='tonique-modal')closeToniqueModal()">
+  <div class="modal">
+    <div class="modal-title">💪 Tonicité de Hilal</div>
+    <div class="form-group">
+      <label class="form-label">Tonus musculaire</label>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="tonique-btn" data-t="bon" onclick="selTonique(this)"
+          style="padding:14px 18px;border-radius:16px;border:2px solid rgba(132,250,176,0.4);background:rgba(132,250,176,0.1);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#2A9B8A;cursor:pointer;transition:all 0.2s;text-align:left">
+          💪 Bon tonus — Membres actifs, bonne résistance
+        </button>
+        <button class="tonique-btn" data-t="moyen" onclick="selTonique(this)"
+          style="padding:14px 18px;border-radius:16px;border:2px solid rgba(249,202,36,0.3);background:rgba(249,202,36,0.07);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#AA7800;cursor:pointer;transition:all 0.2s;text-align:left">
+          😐 Tonus moyen — Légèrement mou ou agité
+        </button>
+        <button class="tonique-btn" data-t="faible" onclick="selTonique(this)"
+          style="padding:14px 18px;border-radius:16px;border:2px solid rgba(255,154,139,0.4);background:rgba(255,154,139,0.1);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#CC4060;cursor:pointer;transition:all 0.2s;text-align:left">
+          ⚠️ Tonus faible — Bébé mou, peu réactif → Consulter
+        </button>
+        <button class="tonique-btn" data-t="hypertonie" onclick="selTonique(this)"
+          style="padding:14px 18px;border-radius:16px;border:2px solid rgba(255,154,139,0.5);background:rgba(255,106,136,0.1);font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#CC4060;cursor:pointer;transition:all 0.2s;text-align:left">
+          🚨 Hypertonie — Très rigide, crispé → Consulter
+        </button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note (optionnel)</label>
+      <input type="text" id="tonique-note" class="form-input" placeholder="Observations...">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-confirm" onclick="saveTonique()">✓ Enregistrer</button>
+      <button class="btn-cancel" onclick="closeToniqueModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <!-- ============================================================ BOTTOM NAV (mobile) -->
 <nav class="bottom-nav">
   <div class="bn-item active" onclick="nav('dashboard')"><div class="bn-icon">🏠</div><div class="bn-lbl">Accueil</div></div>
-  <div class="bn-item" onclick="nav('courses')"><div class="bn-icon">🛒</div><div class="bn-lbl">Courses</div></div>
-  <div class="bn-item" onclick="openModal()"><div class="bn-icon" style="width:44px;height:44px;background:var(--g-purple);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:22px;margin-top:-14px;box-shadow:0 6px 18px rgba(124,110,245,0.4)">＋</div><div class="bn-lbl">Log</div></div>
-  <div class="bn-item" onclick="nav('calendrier')"><div class="bn-icon">📆</div><div class="bn-lbl">Calendrier</div></div>
   <div class="bn-item" onclick="nav('sante')"><div class="bn-icon">🌡️</div><div class="bn-lbl">Santé</div></div>
+  <div class="bn-item" onclick="openModal()"><div class="bn-icon" style="width:44px;height:44px;background:var(--g-purple);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:22px;margin-top:-14px;box-shadow:0 6px 18px rgba(124,110,245,0.4)">＋</div><div class="bn-lbl">Log</div></div>
+  <div class="bn-item" onclick="nav('diversification')"><div class="bn-icon">🥦</div><div class="bn-lbl">Aliments</div></div>
+  <div class="bn-item" onclick="nav('courses')"><div class="bn-icon">🛒</div><div class="bn-lbl">Courses</div></div>
 </nav>
 
 <!-- ============================================================ MODAL -->
@@ -1975,6 +2380,21 @@ canvas { display:block; }
       <input type="text" id="log-valeur" class="form-input" placeholder="ex : 37.2°C / 3.620 kg">
     </div>
 
+    <!-- Quantité + horaires individuels -->
+    <div class="form-group" id="qty-group" style="display:none">
+      <label class="form-label">Nombre de saisies</label>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <button onclick="changeQty(-1)" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(167,139,250,0.4);background:rgba(167,139,250,0.1);font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:var(--purple-deep);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s">−</button>
+        <div style="flex:1;text-align:center">
+          <span id="qty-display" style="font-size:32px;font-weight:900;background:var(--g-purple);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">1</span>
+          <div style="font-size:10px;font-weight:700;color:var(--text-light);margin-top:2px" id="qty-unit">entrée</div>
+        </div>
+        <button onclick="changeQty(+1)" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(167,139,250,0.4);background:rgba(167,139,250,0.1);font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:var(--purple-deep);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s">＋</button>
+      </div>
+      <!-- Lignes horaires dynamiques — générées par JS -->
+      <div id="qty-entries"></div>
+    </div>
+
     <div class="form-group">
       <label class="form-label">Note (optionnel)</label>
       <input type="text" id="log-note" class="form-input" placeholder="Observations...">
@@ -1992,6 +2412,9 @@ canvas { display:block; }
 
 <!-- ============================================================ JAVASCRIPT -->
 <script>
+/* ===== GLOBALS ===== */
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+
 /* ===== NAVIGATION ===== */
 const TITLES = {
   dashboard:'Vue d\'ensemble', tetes:'Tétées & Repas', sommeil:'Sommeil',
@@ -1999,7 +2422,7 @@ const TITLES = {
   vaccins:'Vaccins', croissance:'Croissance', conseils:'Conseils',
   faq:'FAQ — Questions fréquentes', journal:'Journal de Hilal',
   famille:'Ma famille', settings:'Paramètres',
-  courses:'Liste de courses', calendrier:'Calendrier des RDV'
+  courses:'Liste de courses', calendrier:'Calendrier des RDV', diversification:'Diversification alimentaire'
 };
 
 function nav(id) {
@@ -2008,6 +2431,10 @@ function nav(id) {
   document.querySelectorAll('.bn-item').forEach(n => n.classList.remove('active'));
   const s = document.getElementById('s-' + id);
   if (s) s.classList.add('active');
+  // Highlight sidebar nav item
+  document.querySelectorAll('[id^="nav-"]').forEach(n => n.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
   document.getElementById('topbar-title').textContent = TITLES[id] || id;
   // Highlight nav
   document.querySelectorAll('.nav-item, .bn-item').forEach(el => {
@@ -2022,6 +2449,8 @@ function nav(id) {
   if (id === 'sante') setTimeout(drawTempChart, 80);
   if (id === 'calendrier') setTimeout(() => { renderRdvList(); renderMiniCal(); }, 60);
   if (id === 'rdv') setTimeout(renderExamTable, 60);
+  if (id === 'dashboard') { setTimeout(updateAttentionUI, 60); setTimeout(drawDashWeightChart, 80); setTimeout(drawDashFoodCard, 100); }
+  if (id === 'diversification') { setTimeout(renderDivList, 60); setTimeout(renderDivSuggestions, 60); setTimeout(updateDivStats, 60); }
   closeSidebar();
 }
 
@@ -2128,6 +2557,7 @@ function openModal(type) {
       btn.classList.add('sel');
     }
   }
+  _logQty = 1;
   _updateModalFields();
   document.getElementById('modal').classList.add('open');
 }
@@ -2140,12 +2570,96 @@ function selType(el) {
   _updateModalFields();
 }
 
+let _logQty = 1;
+
+// Labels par type
+const QTY_UNITS = {
+  couche: ['couche','couches'],
+  tetee:  ['tétée','tétées'],
+  regurgi:['régurgitation','régurgitations'],
+  pleurs: ['épisode','épisodes'],
+  medoc:  ['prise','prises'],
+};
+function qtyUnit(type, n) {
+  const u = QTY_UNITS[type] || ['entrée','entrées'];
+  return u[n > 1 ? 1 : 0];
+}
+
+function changeQty(delta) {
+  _logQty = Math.max(1, Math.min(10, _logQty + delta));
+  _renderQtyEntries();
+}
+
+// Génère les lignes d'heure pour chaque entrée
+function _renderQtyEntries() {
+  const sel  = document.querySelector('.type-btn.sel');
+  const type = sel ? sel.dataset.type : 'tetee';
+  const disp = document.getElementById('qty-display');
+  const unit = document.getElementById('qty-unit');
+  const container = document.getElementById('qty-entries');
+  if (disp) disp.textContent = _logQty;
+  if (unit) unit.textContent = qtyUnit(type, _logQty);
+  if (!container) return;
+
+  // Lire les valeurs déjà saisies pour ne pas les écraser au rechargement
+  const existing = [];
+  container.querySelectorAll('.qty-row').forEach(row => {
+    existing.push({
+      date:  row.querySelector('.qty-date')?.value  || '',
+      heure: row.querySelector('.qty-heure')?.value || '',
+    });
+  });
+
+  // Date de base = sélecteur principal
+  const baseDate = document.getElementById('log-date')?.value || new Date().toISOString().split('T')[0];
+  const baseTime = document.getElementById('log-heure')?.value || new Date().toTimeString().slice(0,5);
+
+  container.innerHTML = '';
+
+  // Si qty = 1, on utilise les champs principaux → pas de lignes supplémentaires
+  if (_logQty <= 1) return;
+
+  for (let i = 0; i < _logQty; i++) {
+    const savedDate  = existing[i]?.date  || baseDate;
+    const savedTime  = existing[i]?.heure || baseTime;
+
+    const row = document.createElement('div');
+    row.className = 'qty-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px;background:rgba(167,139,250,0.06);border:1.5px solid rgba(167,139,250,0.15);border-radius:14px;padding:10px 12px';
+    row.innerHTML =
+      '<div style="width:22px;height:22px;border-radius:50%;background:var(--g-purple);display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+        '<span style="font-size:10px;font-weight:900;color:white">' + (i+1) + '</span>' +
+      '</div>' +
+      '<div style="flex:1;display:flex;gap:8px">' +
+        '<input type="date" class="form-input qty-date" value="' + savedDate + '" style="flex:1;padding:8px 10px;font-size:12px">' +
+        '<input type="time" class="form-input qty-heure" value="' + savedTime + '" style="flex:1;padding:8px 10px;font-size:12px">' +
+      '</div>';
+    container.appendChild(row);
+  }
+}
+
+// Lire toutes les heures saisies (qty rows ou champ principal si qty=1)
+function _readQtyTimes(baseDate, baseTime) {
+  if (_logQty <= 1) {
+    return [{ date: baseDate, heure: baseTime }];
+  }
+  const rows   = document.querySelectorAll('.qty-row');
+  const result = [];
+  rows.forEach(row => {
+    const d = row.querySelector('.qty-date')?.value  || baseDate;
+    const h = row.querySelector('.qty-heure')?.value || baseTime;
+    result.push({ date: d, heure: h });
+  });
+  return result;
+}
+
 function _updateModalFields() {
   const sel = document.querySelector('.type-btn.sel');
   const type = sel ? sel.dataset.type : 'tetee';
   const seinGroup  = document.getElementById('sein-group');
   const finGroup   = document.getElementById('fin-group');
   const valGroup   = document.getElementById('valeur-group');
+  const qtyGroup   = document.getElementById('qty-group');
   const logValeur  = document.getElementById('log-valeur');
 
   // Sein visible for tétée only
@@ -2158,6 +2672,10 @@ function _updateModalFields() {
   const showVal = ['temperature','mesure','pleurs','regurgi','medoc'].includes(type);
   if (valGroup) valGroup.style.display = showVal ? 'block' : 'none';
 
+  // Quantité visible pour types répétables (pas sommeil/mesure/temp)
+  const showQty = ['couche','tetee','regurgi','pleurs','medoc'].includes(type);
+  if (qtyGroup) qtyGroup.style.display = showQty ? 'block' : 'none';
+
   // Update placeholder
   if (logValeur) {
     const placeholders = {
@@ -2169,6 +2687,8 @@ function _updateModalFields() {
     };
     logValeur.placeholder = placeholders[type] || '';
   }
+
+  _renderQtyEntries();
 }
 
 function selectSein(sein) {
@@ -2215,12 +2735,31 @@ function saveLog() {
     if (dureeMin < 0) { showToast('⚠️ Heure de fin avant heure de début'); return; }
   }
 
+  // qty : number of identical entries to save
+  const qty = (typeof _logQty === 'number' && _logQty > 1) ? _logQty : 1;
+
+  // Récupérer les horaires individuels
+  const times = _readQtyTimes(date, heure);
+
   if (type === 'tetee') {
-    dbSaveTetee(_selectedSein, debutISO, dureeMin, note || null);
+    times.forEach(t => {
+      const iso = t.date + 'T' + t.heure + ':00';
+      dbSaveTetee(_selectedSein, iso, dureeMin, note || null);
+    });
+    if (qty > 1) { closeModal(); showToast('🍼 ' + qty + ' tétées enregistrées'); return; }
   } else if (type === 'sommeil') {
     dbSaveSommeil(debutISO, finISO, note || null);
   } else if (type === 'couche') {
-    dbSaveCouche('mixte', null, 'normal', debutISO, note || null);
+    times.forEach(t => {
+      const iso = t.date + 'T' + t.heure + ':00';
+      dbSaveCouche('mixte', null, 'normal', iso, note || null);
+    });
+    if (qty > 1) {
+      closeModal();
+      showToast('🧷 ' + qty + ' couches enregistrées');
+      updateAttentionUI();
+      return;
+    }
   } else if (type === 'temperature') {
     if (!valeur) { showToast('⚠️ Saisis la température'); return; }
     dbSaveTemp(valeur, 'Rectale (référence)', debutISO);
@@ -3444,6 +3983,1121 @@ function drawDashWeightChart() {
   });
 }
 
+
+/* ===== PROFIL PAPA / MAMAN ===== */
+let activeProfile = 'papa'; try { activeProfile = localStorage.getItem('hilal_profile') || 'papa'; } catch(e) {}
+
+function switchProfile(p) {
+  activeProfile = p;
+  try { localStorage.setItem('hilal_profile', p); } catch(e){}
+  const isPapa = p === 'papa';
+  const btnP = document.getElementById('profile-papa');
+  const btnM = document.getElementById('profile-maman');
+  const lbl  = document.getElementById('profile-label');
+
+  if (btnP) {
+    btnP.style.borderColor  = isPapa ? 'rgba(161,196,253,0.8)' : 'rgba(167,139,250,0.2)';
+    btnP.style.background   = isPapa ? 'linear-gradient(135deg,rgba(161,196,253,0.35),rgba(123,167,247,0.25))' : 'transparent';
+    btnP.style.color        = isPapa ? '#4480CC' : 'var(--text-mid)';
+    btnP.style.boxShadow    = isPapa ? '0 4px 12px rgba(123,167,247,0.3)' : 'none';
+  }
+  if (btnM) {
+    btnM.style.borderColor  = !isPapa ? 'rgba(255,154,139,0.8)' : 'rgba(167,139,250,0.2)';
+    btnM.style.background   = !isPapa ? 'linear-gradient(135deg,rgba(255,154,139,0.35),rgba(255,106,136,0.2))' : 'transparent';
+    btnM.style.color        = !isPapa ? '#CC4060' : 'var(--text-mid)';
+    btnM.style.boxShadow    = !isPapa ? '0 4px 12px rgba(255,106,136,0.25)' : 'none';
+  }
+  if (lbl) lbl.textContent = isPapa ? '👨 Papa connecté' : '👩 Maman connectée';
+
+  // Update topbar avatar
+  const avatar = document.getElementById('topbar-avatar');
+  if (avatar) avatar.textContent = isPapa ? '👨' : '👩';
+
+  showToast(isPapa ? '👨 Profil Papa activé' : '👩 Profil Maman activé');
+}
+
+function getProfileEmoji() { return activeProfile === 'papa' ? '👨' : '👩'; }
+function getProfileName()  { return activeProfile === 'papa' ? 'Papa' : 'Maman'; }
+
+function initProfile() {
+  switchProfile(activeProfile);
+}
+
+
+/* ================================================================
+   DIVERSIFICATION ALIMENTAIRE
+   ================================================================ */
+
+// Data store (also syncs to Supabase if connected)
+let divFoods = [];
+try { divFoods = JSON.parse(localStorage.getItem('hilal_divfoods') || '[]'); } catch(e) { divFoods = []; }
+
+const DIV_SEED = [
+  { id:'d1', name:'Châtaigne',       cat:'feculents', date:'2026-03-05', reaction:'aime',      note:'', who:'Papa' },
+  { id:'d2', name:'Maïs',            cat:'feculents', date:'2026-03-05', reaction:'aime',      note:'', who:'Papa' },
+  { id:'d3', name:'Petits suisses',  cat:'laitiers',  date:'2026-03-04', reaction:'adore',     note:'', who:'Papa' },
+  { id:'d4', name:'Betterave',       cat:'legumes',   date:'2026-03-03', reaction:'neutre',    note:'', who:'Papa' },
+  { id:'d5', name:'Ail',             cat:'autres',    date:'2026-03-02', reaction:'naime-pas', note:'', who:'Papa' },
+  { id:'d6', name:'Endive',          cat:'legumes',   date:'2026-03-02', reaction:'aime',      note:'', who:'Papa' },
+  { id:'d7', name:'Nectarine',       cat:'fruits',    date:'2026-03-01', reaction:'adore',     note:'', who:'Papa' },
+  { id:'d8', name:'Noix de coco',    cat:'autres',    date:'2026-03-01', reaction:'aime',      note:'', who:'Papa' },
+  { id:'d9', name:'Lentilles corail',cat:'proteines', date:'2026-02-27', reaction:'aime',      note:'', who:'Papa' },
+  { id:'d10',name:'Curry',           cat:'autres',    date:'2026-02-27', reaction:'neutre',    note:'', who:'Papa' },
+];
+if (divFoods.length === 0) {
+  divFoods = DIV_SEED.slice();
+  try { localStorage.setItem('hilal_divfoods', JSON.stringify(divFoods)); } catch(e) {}
+}
+
+// Suggestions par catégorie
+// Catalogue complet avec icônes emoji par aliment
+// Structure : { name, icon, season? }
+const FOOD_CATALOGUE = {
+  legumes: [
+    // Toute l'année
+    {n:'Carotte',       i:'🥕'}, {n:'Brocoli',        i:'🥦'}, {n:'Épinards',      i:'🥬'},
+    {n:'Courgette',     i:'🫛'}, {n:'Haricots verts', i:'🫘'}, {n:'Petits pois',   i:'🟢'},
+    {n:'Poireau',       i:'🧅'}, {n:'Céleri',         i:'🌿'}, {n:'Chou',          i:'🥬'},
+    {n:'Chou-fleur',    i:'🥦'}, {n:'Chou de Bruxelles',i:'🥦'},{n:'Betterave',     i:'🟣'},
+    {n:'Radis',         i:'🔴'}, {n:'Navet',          i:'🟡'}, {n:'Oignon',        i:'🧅'},
+    // Printemps-été
+    {n:'Tomate',        i:'🍅'}, {n:'Concombre',      i:'🥒'}, {n:'Aubergine',     i:'🍆'},
+    {n:'Poivron rouge', i:'🫑'}, {n:'Poivron jaune',  i:'🫑'}, {n:'Fenouil',       i:'🌿'},
+    {n:'Asperge',       i:'🌱'}, {n:'Artichaut',      i:'🥬'}, {n:'Maïs',          i:'🌽'},
+    {n:'Salade verte',  i:'🥗'}, {n:'Roquette',       i:'🌿'}, {n:'Endive',        i:'🥬'},
+    // Automne-hiver
+    {n:'Patate douce',  i:'🍠'}, {n:'Butternut',      i:'🎃'}, {n:'Potimarron',    i:'🎃'},
+    {n:'Courge',        i:'🎃'}, {n:'Panais',         i:'🟡'}, {n:'Topinambour',   i:'🟤'},
+    {n:'Salsifis',      i:'🟫'}, {n:'Ail',            i:'🧄'}, {n:'Pomme de terre',i:'🥔'},
+  ],
+  fruits: [
+    // Toute l'année
+    {n:'Banane',        i:'🍌'}, {n:'Pomme',          i:'🍎'}, {n:'Poire',         i:'🍐'},
+    {n:'Avocat',        i:'🥑'}, {n:'Ananas',         i:'🍍'}, {n:'Mangue',        i:'🥭'},
+    {n:'Noix de coco',  i:'🥥'}, {n:'Kiwi',           i:'🥝'}, {n:'Raisin',        i:'🍇'},
+    // Printemps-été
+    {n:'Fraise',        i:'🍓'}, {n:'Framboise',      i:'🫐'}, {n:'Myrtille',      i:'🫐'},
+    {n:'Cerise',        i:'🍒'}, {n:'Abricot',        i:'🟠'}, {n:'Pêche',         i:'🍑'},
+    {n:'Nectarine',     i:'🍑'}, {n:'Pastèque',       i:'🍉'}, {n:'Melon',         i:'🍈'},
+    {n:'Figue',         i:'🟣'}, {n:'Mûre',           i:'🫐'}, {n:'Groseille',     i:'🔴'},
+    // Automne-hiver
+    {n:'Clémentine',    i:'🍊'}, {n:'Orange',         i:'🍊'}, {n:'Mandarine',     i:'🍊'},
+    {n:'Citron',        i:'🍋'}, {n:'Pamplemousse',   i:'🍊'}, {n:'Châtaigne',     i:'🌰'},
+    {n:'Grenade',       i:'❤️'}, {n:'Coing',          i:'🟡'}, {n:'Kaki',          i:'🟠'},
+  ],
+  feculents: [
+    {n:'Riz',           i:'🍚'}, {n:'Pâtes',          i:'🍝'}, {n:'Pomme de terre',i:'🥔'},
+    {n:'Patate douce',  i:'🍠'}, {n:'Pain',           i:'🍞'}, {n:'Semoule',       i:'🌾'},
+    {n:'Polenta',       i:'🌽'}, {n:'Quinoa',         i:'🌾'}, {n:'Boulgour',      i:'🌾'},
+    {n:'Avoine',        i:'🥣'}, {n:'Orge',           i:'🌾'}, {n:'Épeautre',      i:'🌾'},
+    {n:'Millet',        i:'🌾'}, {n:'Sarrasin',       i:'🌾'}, {n:'Tapioca',       i:'⚪'},
+    {n:'Pain de mie',   i:'🍞'}, {n:'Biscotte',       i:'🍪'}, {n:'Flocons d\'avoine',i:'🥣'},
+  ],
+  proteines: [
+    {n:'Poulet',        i:'🍗'}, {n:'Dinde',          i:'🦃'}, {n:'Boeuf',         i:'🥩'},
+    {n:'Agneau',        i:'🐑'}, {n:'Veau',           i:'🐄'}, {n:'Porc',          i:'🐷'},
+    {n:'Saumon',        i:'🐟'}, {n:'Sole',           i:'🐠'}, {n:'Thon',          i:'🐟'},
+    {n:'Cabillaud',     i:'🐟'}, {n:'Truite',         i:'🐟'}, {n:'Lieu noir',     i:'🐟'},
+    {n:'Sardine',       i:'🐟'}, {n:'Maquereau',      i:'🐟'}, {n:'Oeuf',          i:'🥚'},
+    {n:'Tofu',          i:'⬜'}, {n:'Lentilles corail',i:'🔴'},{n:'Lentilles vertes',i:'🟢'},
+    {n:'Pois chiches',  i:'🟡'}, {n:'Haricots rouges',i:'🔴'}, {n:'Haricots blancs',i:'⚪'},
+    {n:'Fèves',         i:'🫘'}, {n:'Edamame',        i:'🫛'},
+  ],
+  laitiers: [
+    {n:'Yaourt nature',  i:'🥛'}, {n:'Fromage blanc', i:'🥛'}, {n:'Petits suisses',i:'🧀'},
+    {n:'Ricotta',        i:'🧀'}, {n:'Gruyère râpé',  i:'🧀'}, {n:'Mozzarella',    i:'🧀'},
+    {n:'Comté',          i:'🧀'}, {n:'Emmental',      i:'🧀'}, {n:'Gouda',         i:'🧀'},
+    {n:'Lait de vache',  i:'🥛'}, {n:'Kéfir',         i:'🥛'}, {n:'Skyr',          i:'🥛'},
+    {n:'Crème fraîche',  i:'🥛'},
+  ],
+  autres: [
+    {n:'Huile d\'olive', i:'🫒'}, {n:'Beurre',        i:'🧈'}, {n:'Curcuma',       i:'🟡'},
+    {n:'Gingembre',      i:'🫚'}, {n:'Cannelle',      i:'🟤'}, {n:'Vanille',       i:'🌿'},
+    {n:'Persil',         i:'🌿'}, {n:'Basilic',       i:'🌿'}, {n:'Coriandre',     i:'🌿'},
+    {n:'Thym',           i:'🌿'}, {n:'Laurier',       i:'🌿'}, {n:'Menthe',        i:'🌿'},
+    {n:'Miel',           i:'🍯'}, {n:'Compote',       i:'🍎'}, {n:'Purée de fruits',i:'🥣'},
+  ],
+};
+
+// Map name → icon for quick lookup
+const FOOD_ICONS = {};
+Object.values(FOOD_CATALOGUE).flat().forEach(f => { FOOD_ICONS[f.n.toLowerCase()] = f.i; });
+
+// Keep DIV_SUGGESTIONS as array of names for compatibility
+const DIV_SUGGESTIONS = {};
+Object.keys(FOOD_CATALOGUE).forEach(cat => {
+  DIV_SUGGESTIONS[cat] = FOOD_CATALOGUE[cat].map(f => f.n);
+});
+
+const DIV_CAT_LABELS = {
+  legumes:'🥦 Légumes', fruits:'🍎 Fruits', feculents:'🌾 Féculents',
+  proteines:'🥩 Protéines', laitiers:'🥛 Laitiers', autres:'✨ Autres'
+};
+
+const DIV_REACTIONS = {
+  adore:     { emoji:'😍', label:'Adore',    color:'#2A9B8A', bg:'rgba(132,250,176,0.18)' },
+  aime:      { emoji:'😊', label:'Aime',     color:'#5EC2B7', bg:'rgba(132,250,176,0.10)' },
+  neutre:    { emoji:'😐', label:'Neutre',   color:'#7C6EF5', bg:'rgba(167,139,250,0.12)' },
+  'naime-pas':{ emoji:'😒',label:'N\'aime pas',color:'#AA7800',bg:'rgba(249,202,36,0.14)'},
+  deteste:   { emoji:'🤢', label:'Déteste',  color:'#CC4060', bg:'rgba(255,154,139,0.15)' },
+};
+
+let _divCatFilter = 'tous';
+let _divSelectedReact = 'aime';
+
+function saveDivLocal() {
+  try { localStorage.setItem('hilal_divfoods', JSON.stringify(divFoods)); } catch(e){}
+}
+
+/* ── MODAL ────────────────────────────────────────────────── */
+function openDivModal(prefill) {
+  const now = new Date();
+  document.getElementById('div-date').value = now.toISOString().split('T')[0];
+  document.getElementById('div-aliment').value = prefill || '';
+  document.getElementById('div-note').value = '';
+  _divSelectedReact = 'aime';
+  // Reset reaction buttons
+  document.querySelectorAll('.div-react-btn').forEach(b => {
+    b.style.transform = 'scale(1)';
+    b.style.boxShadow = 'none';
+    b.style.opacity = '0.7';
+  });
+  const defaultBtn = document.querySelector('.div-react-btn[data-reaction="aime"]');
+  if (defaultBtn) selDivReact(defaultBtn);
+  document.getElementById('div-modal').classList.add('open');
+}
+
+function closeDivModal() {
+  document.getElementById('div-modal').classList.remove('open');
+}
+
+function selDivCat(el) {
+  el.closest('.type-grid').querySelectorAll('.type-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function selDivReact(el) {
+  _divSelectedReact = el.dataset.reaction;
+  document.querySelectorAll('.div-react-btn').forEach(b => {
+    b.style.transform = 'scale(1)';
+    b.style.boxShadow = 'none';
+    b.style.opacity   = '0.6';
+  });
+  el.style.transform = 'scale(1.08)';
+  el.style.opacity   = '1';
+  const r = DIV_REACTIONS[_divSelectedReact];
+  if (r) el.style.boxShadow = `0 4px 14px ${r.color}44`;
+}
+
+function saveDivFood() {
+  const name = (document.getElementById('div-aliment').value || '').trim();
+  if (!name) { showToast('⚠️ Saisis le nom de l\'aliment'); return; }
+  const catBtn = document.querySelector('#div-modal .type-btn.sel');
+  const cat  = catBtn ? catBtn.dataset.divcat : 'autres';
+  const date = document.getElementById('div-date').value || new Date().toISOString().split('T')[0];
+  const note = document.getElementById('div-note').value.trim();
+
+  const entry = {
+    id: 'd' + Date.now(),
+    name, cat, date,
+    reaction: _divSelectedReact,
+    note,
+    who: getProfileName()
+  };
+
+  // Check duplicate
+  const dup = divFoods.find(f => f.name.toLowerCase() === name.toLowerCase());
+  if (dup) {
+    // Update existing
+    dup.date = date;
+    dup.reaction = _divSelectedReact;
+    dup.note = note;
+    dup.who = getProfileName();
+  } else {
+    divFoods.unshift(entry);
+  }
+
+  saveDivLocal();
+  renderDivList();
+  renderDivSuggestions();
+  updateDivStats();
+  drawDashFoodCard();
+  updateAlimentsUI();
+  closeDivModal();
+
+  const r = DIV_REACTIONS[_divSelectedReact];
+  showToast(`${r ? r.emoji : '🥦'} ${name} enregistré — ${r ? r.label : ''}`);
+}
+
+/* ── FILTER ───────────────────────────────────────────────── */
+function filterDivCat(cat) {
+  _divCatFilter = cat;
+  document.querySelectorAll('[id^="divcat-"]').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('divcat-' + cat);
+  if (btn) btn.classList.add('active');
+  renderDivList();
+  renderDivSuggestions();
+}
+
+/* ── RENDER LIST ──────────────────────────────────────────── */
+function renderDivList() {
+  const el = document.getElementById('div-list');
+  const empty = document.getElementById('div-empty');
+  if (!el) return;
+
+  const search = (document.getElementById('div-search')?.value || '').toLowerCase();
+
+  let filtered = divFoods
+    .filter(f => _divCatFilter === 'tous' || f.cat === _divCatFilter)
+    .filter(f => !search || f.name.toLowerCase().includes(search));
+
+  // Group by date
+  const groups = {};
+  filtered.forEach(f => {
+    const key = f.date || 'Inconnu';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(f);
+  });
+
+  if (Object.keys(groups).length === 0) {
+    el.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  const sortedDates = Object.keys(groups).sort((a,b) => b.localeCompare(a));
+
+  el.innerHTML = sortedDates.map(dateKey => {
+    const dateLabel = formatDivDate(dateKey);
+    const items = groups[dateKey].map(f => {
+      const r = DIV_REACTIONS[f.reaction] || DIV_REACTIONS['neutre'];
+      const catIcon = DIV_CAT_LABELS[f.cat]?.split(' ')[0] || '🌿';
+      const whoTag = f.who ? `<span style="font-size:9px;font-weight:900;padding:1px 6px;border-radius:8px;background:${f.who==='Papa'?'rgba(161,196,253,0.2)':'rgba(255,154,139,0.2)'};color:${f.who==='Papa'?'#4480CC':'#CC4060'};margin-left:4px">${f.who==='Papa'?'👨':'👩'} ${f.who}</span>` : '';
+      return `<div class="log-item" style="background:${r.bg};border:1.5px solid ${r.color}22" onclick="openDivModal('${f.name.replace(/'/g, "\'")}')">
+        <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${r.emoji}</div>
+        <div class="log-info">
+          <div class="log-main" style="display:flex;align-items:center;gap:4px">${f.name}${whoTag}</div>
+          <div class="log-sub" style="color:${r.color}">${r.label} · ${catIcon} ${DIV_CAT_LABELS[f.cat] ? DIV_CAT_LABELS[f.cat].slice(2) : f.cat}${f.note ? ' · ' + f.note : ''}</div>
+        </div>
+        <div style="font-size:10px;font-weight:800;color:${r.color};white-space:nowrap">${r.emoji}</div>
+      </div>`;
+    }).join('');
+    return `<div style="font-size:10px;font-weight:900;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;padding:10px 2px 6px">${dateLabel}</div>${items}`;
+  }).join('');
+}
+
+function formatDivDate(dateStr) {
+  if (!dateStr || dateStr === 'Inconnu') return 'Date inconnue';
+  const d = new Date(dateStr + 'T12:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+  const dt = new Date(dateStr + 'T00:00:00');
+  if (dt.toDateString() === today.toDateString()) return 'Aujourd\'hui';
+  if (dt.toDateString() === yesterday.toDateString()) return 'Hier';
+  return d.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+}
+
+/* ── RENDER SUGGESTIONS ───────────────────────────────────── */
+function renderDivSuggestions() {
+  const el = document.getElementById('div-suggestions');
+  if (!el) return;
+  const tried = new Set(divFoods.map(f => f.name.toLowerCase()));
+
+  const cats = _divCatFilter === 'tous'
+    ? Object.keys(DIV_SUGGESTIONS)
+    : [_divCatFilter];
+
+  el.innerHTML = cats.map(cat => {
+    if (!(FOOD_CATALOGUE[cat] || []).filter(f => !tried.has(f.n.toLowerCase())).length) return '';
+    const catData = (FOOD_CATALOGUE[cat] || []).filter(f => !tried.has(f.n.toLowerCase()));
+    if (!catData.length) return '';
+    return `<div style="margin-bottom:16px">
+      <div style="font-size:10px;font-weight:900;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">${DIV_CAT_LABELS[cat]}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${catData.slice(0,12).map(f => `
+          <button onclick="openDivModal('${f.n.replace(/'/g,"\'")}')"
+            style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1.5px dashed rgba(167,139,250,0.35);background:rgba(167,139,250,0.06);font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--purple-deep);cursor:pointer;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(167,139,250,0.16)';this.style.borderStyle='solid'"
+            onmouseout="this.style.background='rgba(167,139,250,0.06)';this.style.borderStyle='dashed'">
+            <span style="font-size:14px">${f.i}</span>${f.n}
+          </button>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── STATS ────────────────────────────────────────────────── */
+function updateDivStats() {
+  const total   = divFoods.length;
+  const loves   = divFoods.filter(f => f.reaction === 'adore' || f.reaction === 'aime').length;
+  const neutral = divFoods.filter(f => f.reaction === 'neutre' || f.reaction === 'naime-pas' || f.reaction === 'deteste').length;
+  const tEl = document.getElementById('div-total');
+  const lEl = document.getElementById('div-loves');
+  const nEl = document.getElementById('div-neutral');
+  if (tEl) tEl.textContent = total;
+  if (lEl) lEl.textContent = loves;
+  if (nEl) nEl.textContent = neutral;
+}
+
+function initDiversification() {
+  renderDivList();
+  renderDivSuggestions();
+  updateDivStats();
+}
+
+
+/* ================================================================
+   POINTS D'ATTENTION — Urines, Tétées, Tonicité, Ventre
+   ================================================================ */
+
+// Local storage for today's attention data
+let attentionData = { urines:0, tetes:2, tonique:null, ventre:null, ventreNote:'', toniqueNote:'', date:'' };
+try {
+  const saved = JSON.parse(localStorage.getItem('hilal_attention') || 'null');
+  const today = new Date().toISOString().split('T')[0];
+  if (saved && saved.date === today) attentionData = saved;
+  else attentionData.date = today;
+} catch(e) {}
+
+function saveAttention() {
+  try { localStorage.setItem('hilal_attention', JSON.stringify(attentionData)); } catch(e) {}
+}
+
+/* ── UPDATE UI ──────────────────────────────────────────── */
+/* updateAttentionUI merged into initAttention */
+
+/* ── COURBES DE PROGRESSION RÉALISTES ───────────────────────
+   Nouveau-né : rythme irrégulier, pics de tétées la nuit et
+   en soirée, urines concentrées le matin, plus fréquentes
+   l'après-midi. On utilise des courbes par paliers souples
+   plutôt qu'une droite rigide.
+─────────────────────────────────────────────────────────── */
+
+// Interpole une valeur dans une table de points {h, v}
+// Les points définissent la "courbe attendue" sur 24h
+function interpolateCurve(curve, hNow) {
+  if (hNow <= curve[0].h) return curve[0].v;
+  if (hNow >= curve[curve.length-1].h) return curve[curve.length-1].v;
+  for (let i = 1; i < curve.length; i++) {
+    if (hNow <= curve[i].h) {
+      const t = (hNow - curve[i-1].h) / (curve[i].h - curve[i-1].h);
+      // Lissage léger (ease) pour éviter les sauts brusques
+      const ease = t * t * (3 - 2 * t);
+      return curve[i-1].v + ease * (curve[i].v - curve[i-1].v);
+    }
+  }
+  return curve[curve.length-1].v;
+}
+
+// Tolérance : marge acceptable avant de déclencher une alerte
+// Plus grande en début de journée, plus serrée en fin
+function getTolerance(h) {
+  if (h < 8)  return 2.0;  // Grande souplesse le matin
+  if (h < 14) return 1.5;  // Souplesse modérée
+  if (h < 19) return 1.0;  // Tolérance normale
+  return 0.5;              // Fin de journée : on surveille
+}
+
+// ── Courbe URINES sur 24h (objectif 5–6)
+// Nouveau-né : peu d'urine la nuit, pics en matinée et après-midi
+// La courbe monte doucement puis accélère après 9h
+const URINE_CURVE = [
+  { h:0,  v:0   },
+  { h:4,  v:0.2 },  // Nuit : 0 à 1 urine possible
+  { h:7,  v:0.5 },  // Réveil : encore peu
+  { h:9,  v:1.2 },  // Matin : ça démarre
+  { h:12, v:2.5 },  // Midi : ~2–3 attendues
+  { h:15, v:3.5 },  // Après-midi
+  { h:18, v:4.2 },  // Fin d'après-midi
+  { h:21, v:4.0 },  // Soirée : objectif minimum atteint (4)
+  { h:24, v:5.0 },
+];
+
+// ── Courbe TÉTÉES sur 24h (objectif 8–12)
+// Nouveau-né : tète beaucoup la nuit et en soirée,
+// peut faire 2–3h sans téter en milieu de journée (sommeil)
+const TETEE_CURVE = [
+  { h:0,  v:0   },
+  { h:3,  v:1.5 },  // Nuit : 1–2 tétées
+  { h:6,  v:2.5 },  // Fin de nuit
+  { h:8,  v:3.0 },  // Matin
+  { h:10, v:3.8 },  // Matinée (peut dormir 2–3h)
+  { h:13, v:5.0 },  // Début d'après-midi
+  { h:16, v:6.5 },  // Après-midi actif
+  { h:19, v:8.0 },  // Soirée : cluster feeding possible
+  { h:21, v:9.0 },  // Pic soirée
+  { h:24, v:10.0},  // Objectif nuit incluse
+];
+
+function getExpectedByHour(type) {
+  const h = new Date().getHours() + new Date().getMinutes() / 60;
+  const curve = type === 'urines' ? URINE_CURVE : TETEE_CURVE;
+  return interpolateCurve(curve, h);
+}
+
+function updateUrinesUI() {
+  const n = attentionData.urines;
+  const badge = document.getElementById('att-urines-badge');
+  const msg   = document.getElementById('att-urines-msg');
+  const fill  = document.getElementById('att-urines-fill');
+  const card  = document.getElementById('att-urines');
+  if (!badge) return;
+
+  // Urines spread across 24h, objectif 5–6/jour
+  // On ne s'attend pas à la même chose à 6h qu'à 20h
+  const expected = getExpectedByHour('urines');
+  const now = new Date();
+  const h = now.getHours() + now.getMinutes() / 60;
+
+  badge.textContent = n + ' / 4–6';
+  const pct = Math.min(100, (n / 6) * 100);
+  if (fill) fill.style.width = pct + '%';
+
+  // Seuil avec tolérance souple selon l'heure
+  const retard = expected - n;
+  const tol = getTolerance(h);
+  const urgence = retard >= tol * 1.5 && h >= 10;
+  const attention = retard >= tol && h >= 13;
+  const finJour = h >= 20 && n < 5;
+
+  if (n >= 6) {
+    // Largement atteint
+    badge.style.background = 'rgba(161,196,253,0.3)'; badge.style.color = '#4480CC';
+    if (msg) msg.textContent = '💧 ' + n + ' urines — bébé bien hydraté';
+    if (card) { card.style.borderColor = 'rgba(161,196,253,0.5)'; card.style.background = 'linear-gradient(135deg,rgba(161,196,253,0.18),rgba(123,167,247,0.10))'; }
+    if (fill) fill.style.background = 'var(--g-blue)';
+  } else if (n >= 4) {
+    // Objectif minimum atteint
+    badge.style.background = 'rgba(132,250,176,0.3)'; badge.style.color = '#2A9B8A';
+    if (msg) msg.textContent = '✅ Objectif atteint !';
+    if (card) { card.style.borderColor = 'rgba(132,250,176,0.6)'; card.style.background = 'linear-gradient(135deg,rgba(132,250,176,0.18),rgba(94,194,183,0.10))'; }
+    if (fill) fill.style.background = 'var(--g-mint)';
+  } else if (urgence || finJour) {
+    // Alerte rouge — retard significatif ET heure avancée
+    badge.style.background = 'rgba(255,154,139,0.35)'; badge.style.color = '#CC4060';
+    if (msg) msg.textContent = finJour
+      ? '🚨 Seulement ' + n + '/4 min. — fin de journée proche !'
+      : '⚠️ Retard — ' + n + ' urine(s) pour ' + Math.round(expected) + ' attendue(s) à cette heure';
+    if (card) { card.style.borderColor = 'rgba(255,106,136,0.7)'; card.style.background = 'linear-gradient(135deg,rgba(255,106,136,0.15),rgba(255,154,139,0.08))'; }
+    if (fill) fill.style.background = 'var(--g-salmon)';
+  } else if (attention) {
+    // Orange — légèrement en retard, heure intermédiaire
+    badge.style.background = 'rgba(249,202,36,0.3)'; badge.style.color = '#AA7800';
+    if (msg) msg.textContent = '⏳ ' + n + ' / ~' + Math.round(expected) + ' attendue(s) — en cours';
+    if (card) { card.style.borderColor = 'rgba(249,202,36,0.45)'; card.style.background = 'linear-gradient(135deg,rgba(249,202,36,0.12),rgba(249,202,36,0.06))'; }
+    if (fill) fill.style.background = 'var(--g-yellow)';
+  } else {
+    // Neutre — trop tôt pour alerter ou dans les clous
+    badge.style.background = 'rgba(161,196,253,0.2)'; badge.style.color = '#4480CC';
+    const hLabel = h < 8 ? 'début de journée' : h < 14 ? 'matinée' : 'après-midi';
+    if (msg) msg.textContent = '💧 ' + n + ' — objectif 4–6 sur la journée';
+    if (card) { card.style.borderColor = 'rgba(161,196,253,0.35)'; card.style.background = 'linear-gradient(135deg,rgba(161,196,253,0.15),rgba(123,167,247,0.08))'; }
+    if (fill) fill.style.background = 'var(--g-blue)';
+  }
+}
+
+function updateTetesUI() {
+  const n = attentionData.tetes;
+  const badge = document.getElementById('att-tetes-badge');
+  const msg   = document.getElementById('att-tetes-msg');
+  const fill  = document.getElementById('att-tetes-fill');
+  const card  = document.getElementById('att-tetes');
+  if (!badge) return;
+
+  // Tétées sur 24h : 8–12 soit ~1 toutes les 2–3h
+  // Intervalle entre tétées : 24/10 = 2.4h en moyenne
+  const now = new Date();
+  const h = now.getHours() + now.getMinutes() / 60;
+  const expectedTetes = getExpectedByHour('tetees');
+  const retard = expectedTetes - n;
+  const finJour = h >= 21 && n < 8;
+
+  badge.textContent = n + ' / 8–12';
+  const pct = Math.min(100, (n / 12) * 100);
+  if (fill) fill.style.width = pct + '%';
+
+  if (n >= 8) {
+    // Dans les clous ou au-delà
+    badge.style.background = n <= 12 ? 'rgba(132,250,176,0.3)' : 'rgba(167,139,250,0.3)';
+    badge.style.color = n <= 12 ? '#2A9B8A' : '#7C6EF5';
+    if (msg) msg.textContent = n <= 12 ? '✅ Parfait !' : '🍼 ' + n + ' tétées — bébé très demandeur';
+    if (card) { card.style.borderColor = n <= 12 ? 'rgba(132,250,176,0.6)' : 'rgba(167,139,250,0.5)'; card.style.background = 'linear-gradient(135deg,rgba(132,250,176,0.15),rgba(94,194,183,0.08))'; }
+    if (fill) fill.style.background = n <= 12 ? 'var(--g-mint)' : 'var(--g-purple)';
+  } else if (finJour) {
+    // Fin de journée, pas encore l'objectif
+    badge.style.background = 'rgba(255,154,139,0.35)'; badge.style.color = '#CC4060';
+    if (msg) msg.textContent = '🚨 ' + n + '/8 tétées — fin de journée proche';
+    if (card) { card.style.borderColor = 'rgba(255,106,136,0.7)'; card.style.background = 'linear-gradient(135deg,rgba(255,106,136,0.18),rgba(255,154,139,0.12))'; }
+    if (fill) fill.style.background = 'var(--g-salmon)';
+  } else if (retard >= getTolerance(h) * 1.5 && h >= 9) {
+    // Retard notable vs courbe — seuil souple selon l'heure
+    badge.style.background = 'rgba(255,154,139,0.35)'; badge.style.color = '#CC4060';
+    if (msg) msg.textContent = '⚠️ ' + n + ' tétées — ~' + Math.round(expectedTetes) + ' attendues · réveillez si >3h sans téter';
+    if (card) { card.style.borderColor = 'rgba(255,106,136,0.6)'; card.style.background = 'linear-gradient(135deg,rgba(255,106,136,0.14),rgba(255,154,139,0.08))'; }
+    if (fill) fill.style.background = 'var(--g-salmon)';
+  } else if (retard >= getTolerance(h) && h >= 13) {
+    // Légèrement en retard, milieu ou fin de journée
+    badge.style.background = 'rgba(249,202,36,0.3)'; badge.style.color = '#AA7800';
+    if (msg) msg.textContent = '⏳ ' + n + ' tétées — ~' + Math.round(expectedTetes) + ' attendues à cette heure';
+    if (card) { card.style.borderColor = 'rgba(249,202,36,0.45)'; card.style.background = 'linear-gradient(135deg,rgba(249,202,36,0.12),rgba(249,202,36,0.06))'; }
+    if (fill) fill.style.background = 'var(--g-yellow)';
+  } else {
+    // Trop tôt ou dans les clous — message neutre encourageant
+    badge.style.background = 'rgba(255,154,139,0.2)'; badge.style.color = '#CC4060';
+    const prochaine = Math.round((n + 1) * 2.4);
+    if (msg) msg.textContent = '🍼 ' + n + ' tétées — objectif 8–12 / 24h';
+    if (card) { card.style.borderColor = 'rgba(255,154,139,0.35)'; card.style.background = 'linear-gradient(135deg,rgba(255,154,139,0.15),rgba(255,106,136,0.08))'; }
+    if (fill) fill.style.background = 'var(--g-salmon)';
+  }
+}
+
+function updateToniqueUI() {
+  const t = attentionData.tonique;
+  const badge = document.getElementById('att-tonique-badge');
+  const msg   = document.getElementById('att-tonique-msg');
+  const card  = document.getElementById('att-tonique');
+  if (!badge) return;
+
+  const map = {
+    bon:        { label:'💪 Bon tonus',   color:'#2A9B8A', bg:'rgba(132,250,176,0.3)', border:'rgba(132,250,176,0.6)', cardBg:'linear-gradient(135deg,rgba(132,250,176,0.18),rgba(94,194,183,0.10))' },
+    moyen:      { label:'😐 Moyen',       color:'#AA7800', bg:'rgba(249,202,36,0.3)',  border:'rgba(249,202,36,0.5)',  cardBg:'linear-gradient(135deg,rgba(249,202,36,0.15),rgba(249,202,36,0.07))' },
+    faible:     { label:'⚠️ Faible',      color:'#CC4060', bg:'rgba(255,154,139,0.35)',border:'rgba(255,106,136,0.7)', cardBg:'linear-gradient(135deg,rgba(255,106,136,0.18),rgba(255,154,139,0.12))' },
+    hypertonie: { label:'🚨 Hypertonie',  color:'#CC4060', bg:'rgba(255,106,136,0.4)', border:'rgba(255,106,136,0.8)', cardBg:'linear-gradient(135deg,rgba(255,106,136,0.2),rgba(255,154,139,0.15))' },
+  };
+  if (t && map[t]) {
+    const r = map[t];
+    badge.textContent = r.label; badge.style.background = r.bg; badge.style.color = r.color;
+    if (card) { card.style.borderColor = r.border; card.style.background = r.cardBg; }
+    if (msg)  msg.textContent = attentionData.toniqueNote || 'Évalué aujourd\'hui ✓';
+    if ((t === 'faible' || t === 'hypertonie') && !document.getElementById('att-tonique-alert')) {
+      const alertDiv = document.createElement('div');
+      alertDiv.id = 'att-tonique-alert';
+      alertDiv.style.cssText = 'margin-top:6px;font-size:9px;font-weight:900;color:#CC4060;background:rgba(255,106,136,0.1);padding:4px 8px;border-radius:8px';
+      alertDiv.textContent = '→ Signalez à votre pédiatre';
+      if (card) card.appendChild(alertDiv);
+    }
+  } else {
+    badge.textContent = '— / jour'; badge.style.background = 'rgba(132,250,176,0.25)'; badge.style.color = '#2A9B8A';
+    if (msg) msg.textContent = 'Appuyer pour évaluer';
+  }
+}
+
+function updateVentreUI() {
+  const v = attentionData.ventre;
+  const badge = document.getElementById('att-ventre-badge');
+  const msg   = document.getElementById('att-ventre-msg');
+  const card  = document.getElementById('att-ventre');
+  if (!badge) return;
+
+  const map = {
+    souple:   { label:'😌 Souple',      color:'#2A9B8A', bg:'rgba(132,250,176,0.3)',  border:'rgba(132,250,176,0.5)',  cardBg:'linear-gradient(135deg,rgba(132,250,176,0.15),rgba(94,194,183,0.08))' },
+    ballonne: { label:'😣 Ballonné',    color:'#AA7800', bg:'rgba(249,202,36,0.3)',   border:'rgba(249,202,36,0.5)',   cardBg:'linear-gradient(135deg,rgba(249,202,36,0.15),rgba(249,202,36,0.07))' },
+    dur:      { label:'😖 Dur ⚠️',      color:'#CC4060', bg:'rgba(255,154,139,0.4)',  border:'rgba(255,106,136,0.7)',  cardBg:'linear-gradient(135deg,rgba(255,106,136,0.18),rgba(255,154,139,0.12))' },
+    gene:     { label:'😟 Gêne',        color:'#CC4060', bg:'rgba(255,154,139,0.35)', border:'rgba(255,154,139,0.6)',  cardBg:'linear-gradient(135deg,rgba(255,154,139,0.15),rgba(255,106,136,0.08))' },
+  };
+  if (v && map[v]) {
+    const r = map[v];
+    badge.textContent = r.label; badge.style.background = r.bg; badge.style.color = r.color;
+    if (card) { card.style.borderColor = r.border; card.style.background = r.cardBg; }
+    if (msg) msg.textContent = attentionData.ventreNote || 'Évalué aujourd\'hui ✓';
+    if ((v === 'dur' || v === 'gene') && !document.getElementById('att-ventre-alert')) {
+      const alertDiv = document.createElement('div');
+      alertDiv.id = 'att-ventre-alert';
+      alertDiv.style.cssText = 'margin-top:6px;font-size:9px;font-weight:900;color:#CC4060;background:rgba(255,106,136,0.1);padding:4px 8px;border-radius:8px';
+      alertDiv.textContent = '→ Consultez si persistant';
+      if (card) card.appendChild(alertDiv);
+    }
+  } else {
+    badge.textContent = 'Non évalué';
+    if (msg) msg.textContent = 'Appuyer pour évaluer';
+  }
+}
+
+/* ── VENTRE MODAL ───────────────────────────────────────── */
+let _selectedVentre = null;
+function openVentreModal() {
+  _selectedVentre = null;
+  document.querySelectorAll('.ventre-btn').forEach(b => { b.style.opacity='0.6'; b.style.transform='scale(1)'; b.style.boxShadow='none'; });
+  document.getElementById('ventre-note').value = '';
+  document.getElementById('ventre-modal').classList.add('open');
+}
+function closeVentreModal() { document.getElementById('ventre-modal').classList.remove('open'); }
+function selVentre(el) {
+  _selectedVentre = el.dataset.v;
+  document.querySelectorAll('.ventre-btn').forEach(b => { b.style.opacity='0.5'; b.style.transform='scale(1)'; b.style.boxShadow='none'; });
+  el.style.opacity='1'; el.style.transform='scale(1.03)'; el.style.boxShadow='0 4px 14px rgba(0,0,0,0.1)';
+}
+function saveVentre() {
+  if (!_selectedVentre) { showToast('⚠️ Sélectionne l\'état du ventre'); return; }
+  attentionData.ventre = _selectedVentre;
+  attentionData.ventreNote = document.getElementById('ventre-note').value.trim();
+  saveAttention();
+  updateVentreUI();
+  closeVentreModal();
+  const labels = { souple:'😌 Ventre souple — normal', ballonne:'😣 Ventre ballonné noté', dur:'😖 Ventre dur — à surveiller !', gene:'😟 Gêne notée — à surveiller' };
+  showToast(labels[_selectedVentre] || 'Ventre enregistré');
+}
+
+/* ── TONICITE MODAL ─────────────────────────────────────── */
+let _selectedTonique = null;
+function logTonicite() {
+  _selectedTonique = null;
+  document.querySelectorAll('.tonique-btn').forEach(b => { b.style.opacity='0.6'; b.style.transform='scale(1)'; b.style.boxShadow='none'; });
+  document.getElementById('tonique-note').value = '';
+  document.getElementById('tonique-modal').classList.add('open');
+}
+function closeToniqueModal() { document.getElementById('tonique-modal').classList.remove('open'); }
+function selTonique(el) {
+  _selectedTonique = el.dataset.t;
+  document.querySelectorAll('.tonique-btn').forEach(b => { b.style.opacity='0.5'; b.style.transform='scale(1)'; b.style.boxShadow='none'; });
+  el.style.opacity='1'; el.style.transform='scale(1.02)'; el.style.boxShadow='0 4px 14px rgba(0,0,0,0.1)';
+}
+function saveTonique() {
+  if (!_selectedTonique) { showToast('⚠️ Sélectionne le tonus'); return; }
+  attentionData.tonique = _selectedTonique;
+  attentionData.toniqueNote = document.getElementById('tonique-note').value.trim();
+  saveAttention();
+  updateToniqueUI();
+  closeToniqueModal();
+  const labels = { bon:'💪 Bon tonus enregistré ✓', moyen:'😐 Tonus moyen noté', faible:'⚠️ Tonus faible — signalez à votre pédiatre', hypertonie:'🚨 Hypertonie — consultez votre pédiatre' };
+  showToast(labels[_selectedTonique] || 'Tonicité enregistrée');
+}
+
+function initAttention() {
+  updateAttentionUI();
+}
+
+function updateAttentionUI() {
+  updateUrinesUI();
+  updateTetesUI();
+  updateToniqueUI();
+  updateVentreUI();
+  updateSommeilUI();
+  updateTempUI();
+  updateCouchesUI();
+  updateAlimentsUI();
+}
+
+/* ── SOMMEIL — info seule, pas d'alerte ──────────────────── */
+function updateSommeilUI() {
+  const badge = document.getElementById('att-sommeil-badge');
+  const msg   = document.getElementById('att-sommeil-msg');
+  const fill  = document.getElementById('att-sommeil-fill');
+  const card  = document.getElementById('att-sommeil');
+  if (!badge) return;
+
+  // Données statiques pour l'instant (J+3)
+  const dureeMin = 225; // 3h45 cette nuit
+  const oms = 840;      // OMS recommande 14h/j = 840 min
+  const pct = Math.min(100, (dureeMin / oms) * 100);
+
+  if (fill) fill.style.width = pct + '%';
+
+  const h = Math.floor(dureeMin/60), m = dureeMin%60;
+  const label = h + 'h' + (m>0?m:'');
+  badge.textContent = label;
+
+  // Info uniquement — couleurs douces, pas d'alerte rouge
+  if (dureeMin >= 600) {
+    badge.style.background = 'rgba(132,250,176,0.3)'; badge.style.color = '#2A9B8A';
+    if (msg) msg.textContent = '✓ Bonne nuit · OMS : 14–17h/j';
+    if (fill) fill.style.background = 'var(--g-mint)';
+  } else if (dureeMin >= 360) {
+    badge.style.background = 'rgba(167,139,250,0.25)'; badge.style.color = '#7C6EF5';
+    if (msg) msg.textContent = label + ' · 23h00 → 02h45 · 2 éveils';
+    if (fill) fill.style.background = 'var(--g-purple)';
+  } else {
+    badge.style.background = 'rgba(249,202,36,0.25)'; badge.style.color = '#AA7800';
+    if (msg) msg.textContent = 'ℹ️ Nuit courte · normal nouveau-né';
+    if (fill) fill.style.background = 'var(--g-yellow)';
+  }
+}
+
+/* ── TEMPÉRATURE — info seule ────────────────────────────── */
+function updateTempUI() {
+  const badge = document.getElementById('att-temp-badge');
+  const msg   = document.getElementById('att-temp-msg');
+  const card  = document.getElementById('att-temp');
+  if (!badge) return;
+
+  // Lire la dernière temp depuis les données locales si disponible
+  const temps = JSON.parse(localStorage.getItem('hilal_temps') || '[]');
+  const today = new Date().toISOString().split('T')[0];
+  const todayTemps = temps.filter(t => t && t.heure && t.heure.startsWith(today));
+
+  if (todayTemps.length === 0) {
+    badge.textContent = '—';
+    badge.style.background = 'rgba(132,250,176,0.15)'; badge.style.color = '#5EC2B7';
+    if (msg) msg.textContent = 'ℹ️ Pas encore mesurée aujourd\'hui';
+    return;
+  }
+
+  const last = todayTemps[todayTemps.length-1];
+  const val = parseFloat(last.valeur);
+  badge.textContent = val.toFixed(1) + '°C';
+
+  // Info uniquement — les vraies alertes sont dans la section Santé
+  if (val < 36.0) {
+    badge.style.background = 'rgba(161,196,253,0.3)'; badge.style.color = '#4480CC';
+    if (msg) msg.textContent = 'ℹ️ Hypothermie légère · voir Santé';
+    if (card) card.style.borderColor = 'rgba(161,196,253,0.5)';
+  } else if (val <= 37.5) {
+    badge.style.background = 'rgba(132,250,176,0.3)'; badge.style.color = '#2A9B8A';
+    if (msg) msg.textContent = '✓ Normale · ' + (last.methode || '');
+    if (card) card.style.borderColor = 'rgba(132,250,176,0.5)';
+  } else if (val <= 38.0) {
+    badge.style.background = 'rgba(249,202,36,0.3)'; badge.style.color = '#AA7800';
+    if (msg) msg.textContent = 'ℹ️ Légèrement élevée · surveiller';
+    if (card) card.style.borderColor = 'rgba(249,202,36,0.45)';
+  } else {
+    // Fièvre — info seulement ici, pas d'alerte rouge (section Santé s'en charge)
+    badge.style.background = 'rgba(255,154,139,0.3)'; badge.style.color = '#CC4060';
+    if (msg) msg.textContent = 'ℹ️ Fièvre · consulter section Santé';
+    if (card) card.style.borderColor = 'rgba(255,154,139,0.4)';
+  }
+}
+
+/* ── COUCHES — info seule ────────────────────────────────── */
+function updateCouchesUI() {
+  const badge = document.getElementById('att-couches-badge');
+  const msg   = document.getElementById('att-couches-msg');
+  if (!badge) return;
+
+  const couches = JSON.parse(localStorage.getItem('hilal_couches') || '[]');
+  const today = new Date().toISOString().split('T')[0];
+  const todayCouches = couches.filter(c => c && c.heure && c.heure.startsWith(today));
+  const n = todayCouches.length;
+
+  if (n === 0) {
+    badge.textContent = '0 couche';
+    badge.style.background = 'rgba(252,182,159,0.2)'; badge.style.color = '#C47A3A';
+    if (msg) msg.textContent = 'ℹ️ Aucune enregistrée aujourd\'hui';
+    return;
+  }
+
+  badge.textContent = n + (n>1?' couches':' couche');
+  badge.style.background = 'rgba(132,250,176,0.25)'; badge.style.color = '#2A9B8A';
+
+  const last = todayCouches[todayCouches.length-1];
+  const heure = last.heure ? new Date(last.heure).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '';
+  const type = last.type === 'souille' ? '💩 souillée' : last.type === 'mouille' ? '💧 mouillée' : '🧷 mixte';
+  if (msg) msg.textContent = 'Dernière : ' + heure + ' · ' + type;
+}
+
+/* ── ALIMENTS — info seule ───────────────────────────────── */
+function updateAlimentsUI() {
+  const badge = document.getElementById('att-aliments-badge');
+  const msg   = document.getElementById('att-aliments-msg');
+  if (!badge) return;
+
+  const total = divFoods ? divFoods.length : 0;
+  badge.textContent = total + ' goûté' + (total>1?'s':'');
+  badge.style.background = 'rgba(84,200,140,0.2)'; badge.style.color = '#2A7A5A';
+
+  if (total === 0) {
+    if (msg) msg.textContent = 'ℹ️ Diversification pas encore commencée';
+    return;
+  }
+
+  const last = divFoods[0];
+  const reacts = { adore:'😍', aime:'😊', neutre:'😐', 'naime-pas':'😒', deteste:'🤢' };
+  const emoji = reacts[last.reaction] || '🥦';
+  if (msg) msg.textContent = 'Dernier : ' + last.name + ' ' + emoji;
+}
+
+
+/* ================================================================
+   DASHBOARD — ENCADRÉ DIVERSIFICATION (canvas 4 jours)
+   ================================================================ */
+
+const CAT_TOTALS = {
+  legumes: FOOD_CATALOGUE.legumes.length, fruits: FOOD_CATALOGUE.fruits.length,
+  feculents: FOOD_CATALOGUE.feculents.length, proteines: FOOD_CATALOGUE.proteines.length,
+  laitiers: FOOD_CATALOGUE.laitiers.length, autres: FOOD_CATALOGUE.autres.length,
+};
+const CAT_COLORS = {
+  legumes:   { grad:'linear-gradient(135deg,#84FAB0,#5EC2B7)', text:'#2A9B8A', bg:'rgba(132,250,176,0.15)', border:'rgba(132,250,176,0.3)' },
+  fruits:    { grad:'linear-gradient(135deg,#FF9A8B,#FF6A88)', text:'#CC4060', bg:'rgba(255,154,139,0.15)', border:'rgba(255,154,139,0.3)' },
+  feculents: { grad:'linear-gradient(135deg,#FFEAA7,#F9CA24)', text:'#AA7800', bg:'rgba(249,202,36,0.15)',  border:'rgba(249,202,36,0.3)'  },
+  proteines: { grad:'linear-gradient(135deg,#A1C4FD,#7BA7F7)', text:'#4480CC', bg:'rgba(161,196,253,0.15)', border:'rgba(161,196,253,0.3)' },
+  laitiers:  { grad:'linear-gradient(135deg,#C4A8F8,#9880D8)', text:'#7C6EF5', bg:'rgba(167,139,250,0.15)', border:'rgba(167,139,250,0.3)' },
+  autres:    { grad:'linear-gradient(135deg,#FFECD2,#FCB69F)', text:'#C47A3A', bg:'rgba(252,182,159,0.15)', border:'rgba(252,182,159,0.3)' },
+};
+const CAT_NAMES = { legumes:'Légumes', fruits:'Fruits', feculents:'Féculents', proteines:'Protéines', laitiers:'Laitiers', autres:'Autres' };
+const CAT_EMO   = { legumes:'🥦', fruits:'🍎', feculents:'🌾', proteines:'🥩', laitiers:'🥛', autres:'✨' };
+
+// Reaction dot colors for canvas
+const REACT_COLORS = {
+  adore:      '#2A9B8A',
+  aime:       '#5EC2B7',
+  neutre:     '#7C6EF5',
+  'naime-pas':'#AA7800',
+  deteste:    '#CC4060',
+};
+
+function drawDashFoodCard() {
+  if (!divFoods) return;
+
+  const $ = id => document.getElementById(id);
+
+  // ── Stats globales ────────────────────────────────────────
+  const total   = divFoods.length;
+  const loves   = divFoods.filter(f => f.reaction === 'adore' || f.reaction === 'aime').length;
+  const neutral = total - loves;
+  if ($('dash-food-total'))   $('dash-food-total').textContent   = total;
+  if ($('dash-food-loves'))   $('dash-food-loves').textContent   = loves;
+  if ($('dash-food-neutral')) $('dash-food-neutral').textContent = neutral;
+
+  // ── 4 derniers jours ─────────────────────────────────────
+  const days = [];
+  for (let i = 3; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  const byDay = {};
+  divFoods.forEach(f => {
+    if (!byDay[f.date]) byDay[f.date] = [];
+    byDay[f.date].push(f);
+  });
+  let cumul = 0;
+  const pts = days.map((dateStr, i) => {
+    const items = byDay[dateStr] || [];
+    cumul += items.length;
+    const d = new Date(dateStr + 'T12:00:00');
+    return {
+      dateStr, items, cumul,
+      label: d.toLocaleDateString('fr-FR', { weekday:'short', day:'numeric' }),
+      isToday: i === 3,
+    };
+  });
+
+  // ── Couleur dominante d'un jour ───────────────────────────
+  function reactionColor(reaction) {
+    if (reaction === 'adore' || reaction === 'aime')          return { dot:'#2A9B8A', line:'#84FAB0' };
+    if (reaction === 'naime-pas' || reaction === 'deteste')   return { dot:'#CC4060', line:'#FF9A8B' };
+    return { dot:'#AA7800', line:'#F9CA24' };
+  }
+  function dayColor(items) {
+    if (!items.length) return { dot:'#C4B5FD', line:'#C4B5FD' };
+    const counts = { good:0, neutral:0, bad:0 };
+    items.forEach(f => {
+      if (f.reaction === 'adore' || f.reaction === 'aime')          counts.good++;
+      else if (f.reaction === 'naime-pas' || f.reaction === 'deteste') counts.bad++;
+      else counts.neutral++;
+    });
+    if (counts.good >= counts.bad && counts.good >= counts.neutral) return { dot:'#2A9B8A', line:'#84FAB0' };
+    if (counts.bad  >= counts.good && counts.bad  >= counts.neutral) return { dot:'#CC4060', line:'#FF9A8B' };
+    return { dot:'#AA7800', line:'#F9CA24' };
+  }
+
+  // ── Dimensions canvas ─────────────────────────────────────
+  const canvas = $('dashFoodChart');
+  if (!canvas) return;
+
+  // On calcule d'abord le nombre max de bulles par colonne pour ajuster la hauteur
+  const maxPerDay = Math.max(...pts.map(p => p.items.length), 1);
+  const BUBBLE_H  = 30; // hauteur par bulle (icône + nom + réaction)
+  const BUBBLE_GAP = 6;
+  const PAD_TOP_BUBBLES = 14; // espace au-dessus du premier label
+  // Hauteur totale = zone bulles au-dessus + zone courbe + labels en bas
+  const CURVE_ZONE = 70;  // hauteur réservée pour la courbe + points
+  const LABEL_ZONE = 24;  // labels date en bas
+  const H = PAD_TOP_BUBBLES + maxPerDay * (BUBBLE_H + BUBBLE_GAP) + CURVE_ZONE + LABEL_ZONE;
+
+  const ctx  = canvas.getContext('2d');
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W    = rect.width;
+
+  canvas.width        = W * dpr;
+  canvas.height       = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  // Courbe dans la zone basse : entre bubblesBottom et H - LABEL_ZONE
+  const bubblesBottom = PAD_TOP_BUBBLES + maxPerDay * (BUBBLE_H + BUBBLE_GAP);
+  const curveTop    = bubblesBottom + 10;
+  const curveBottom = H - LABEL_ZONE;
+  const curveH      = curveBottom - curveTop;
+
+  const pad = { l: 24, r: 24 };
+  const cW  = W - pad.l - pad.r;
+  const maxC = Math.max(cumul, 1);
+
+  function xPos(i) { return pad.l + (i / (pts.length - 1)) * cW; }
+  // y dans la zone courbe, de bas en haut selon valeur
+  function yPos(v) { return curveTop + curveH - (v / maxC) * curveH; }
+
+  // ── Fond de la zone courbe ────────────────────────────────
+  const gFill = ctx.createLinearGradient(0, curveTop, 0, curveBottom);
+  gFill.addColorStop(0, 'rgba(132,250,176,0.13)');
+  gFill.addColorStop(1, 'rgba(132,250,176,0.01)');
+  ctx.beginPath();
+  ctx.moveTo(xPos(0), yPos(pts[0].cumul));
+  for (let i = 1; i < pts.length; i++) {
+    const mx = (xPos(i-1) + xPos(i)) / 2;
+    ctx.bezierCurveTo(mx, yPos(pts[i-1].cumul), mx, yPos(pts[i].cumul), xPos(i), yPos(pts[i].cumul));
+  }
+  ctx.lineTo(xPos(pts.length - 1), curveBottom);
+  ctx.lineTo(xPos(0), curveBottom);
+  ctx.closePath();
+  ctx.fillStyle = gFill;
+  ctx.fill();
+
+  // ── Courbe segmentée colorée ──────────────────────────────
+  for (let i = 1; i < pts.length; i++) {
+    const x0 = xPos(i-1), y0 = yPos(pts[i-1].cumul);
+    const x1 = xPos(i),   y1 = yPos(pts[i].cumul);
+    const mx  = (x0 + x1) / 2;
+    const segGrad = ctx.createLinearGradient(x0, 0, x1, 0);
+    segGrad.addColorStop(0, dayColor(pts[i-1].items).line);
+    segGrad.addColorStop(1, dayColor(pts[i].items).line);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.bezierCurveTo(mx, y0, mx, y1, x1, y1);
+    ctx.strokeStyle = segGrad;
+    ctx.lineWidth   = 2.8;
+    ctx.lineJoin    = 'round';
+    ctx.stroke();
+  }
+
+  // ── Points + labels date ──────────────────────────────────
+  pts.forEach((p, i) => {
+    const x = xPos(i), y = yPos(p.cumul);
+    const col = dayColor(p.items);
+
+    // Halo
+    ctx.beginPath();
+    ctx.arc(x, y, p.isToday ? 10 : 8, 0, Math.PI * 2);
+    ctx.fillStyle = col.dot + '22';
+    ctx.fill();
+
+    // Point
+    ctx.beginPath();
+    ctx.arc(x, y, p.isToday ? 6 : 5, 0, Math.PI * 2);
+    ctx.fillStyle   = col.dot;
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth   = 2;
+    ctx.stroke();
+
+    // Ligne verticale pointillée montant vers les bulles
+    if (p.items.length > 0) {
+      ctx.save();
+      ctx.setLineDash([3, 4]);
+      ctx.strokeStyle = col.dot + '44';
+      ctx.lineWidth   = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 7);
+      ctx.lineTo(x, bubblesBottom);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Label date en bas
+    ctx.fillStyle = p.isToday ? '#7C6EF5' : 'rgba(174,174,200,0.8)';
+    ctx.font      = (p.isToday ? '800' : '700') + ' 9px Nunito, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.label, x, H - 6);
+  });
+
+  // ── Overlay HTML : bulles aliments ────────────────────────
+  // Une seule bulle par point, les autres s'empilent verticalement AU-DESSUS
+  const overlay = $('dash-food-overlay');
+  if (!overlay) return;
+  overlay.style.height = H + 'px';
+  overlay.innerHTML = '';
+
+  pts.forEach((p, i) => {
+    if (!p.items.length) return;
+
+    const x = xPos(i);
+    // Afficher 1 aliment par point sur le graphe (le plus récent)
+    // Les autres du même jour s'empilent au-dessus, alignés
+    const visibleItems = p.items; // tous visibles, empilés verticalement
+
+    visibleItems.forEach((f, fi) => {
+      const r    = DIV_REACTIONS[f.reaction] || DIV_REACTIONS.neutre;
+      const col  = reactionColor(f.reaction);
+      const ico  = FOOD_ICONS[f.name.toLowerCase()] || '🍽️';
+
+      // Position verticale : de bas en haut, premier aliment en bas de la zone bulles
+      const topY = bubblesBottom - (fi + 1) * (BUBBLE_H + BUBBLE_GAP) + BUBBLE_GAP;
+
+      // Largeur fixe, centrée sur le point X
+      const BW = 82;
+      let leftX = x - BW / 2;
+      leftX = Math.max(4, Math.min(leftX, W - BW - 4));
+
+      const div = document.createElement('div');
+      div.title = f.name + ' \u00b7 ' + r.label;
+      div.style.cssText = [
+        'position:absolute',
+        'top:' + topY + 'px',
+        'left:' + leftX + 'px',
+        'width:' + BW + 'px',
+        'height:' + BUBBLE_H + 'px',
+        'display:flex',
+        'align-items:center',
+        'gap:4px',
+        'background:' + r.bg,
+        'border:1.5px solid ' + col.dot + '55',
+        'border-radius:12px',
+        'padding:0 8px',
+        'box-shadow:0 2px 8px rgba(0,0,0,0.07)',
+        'cursor:pointer',
+        'box-sizing:border-box',
+      ].join(';');
+      div.onclick = () => nav('diversification');
+      div.innerHTML =
+        '<span style="font-size:14px;line-height:1;flex-shrink:0">' + ico + '</span>' +
+        '<div style="display:flex;flex-direction:column;min-width:0;flex:1;overflow:hidden">' +
+          '<span style="font-size:8.5px;font-weight:900;color:' + col.dot + ';line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + f.name + '</span>' +
+          '<span style="font-size:10px;line-height:1">' + r.emoji + '</span>' +
+        '</div>';
+      overlay.appendChild(div);
+    });
+  });
+
+  // ── Barres catégories ─────────────────────────────────────
+  const catsEl = $('dash-food-cats');
+  if (catsEl) {
+    const byCat = {};
+    divFoods.forEach(f => { byCat[f.cat] = (byCat[f.cat] || 0) + 1; });
+    catsEl.innerHTML = Object.keys(CAT_TOTALS).map(cat => {
+      const done = byCat[cat] || 0;
+      const tot  = CAT_TOTALS[cat];
+      const pct  = Math.round((done / tot) * 100);
+      const col  = CAT_COLORS[cat];
+      return '<div style="background:' + col.bg + ';border-radius:12px;padding:7px 9px;border:1.5px solid ' + col.border + '">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+        '<span style="font-size:10px;font-weight:900;color:' + col.text + '">' + CAT_EMO[cat] + ' ' + CAT_NAMES[cat] + '</span>' +
+        '<span style="font-size:9px;font-weight:900;color:' + col.text + '">' + done + '/' + tot + '</span>' +
+        '</div>' +
+        '<div style="height:3px;border-radius:3px;background:rgba(255,255,255,0.4);overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;background:' + col.grad + ';border-radius:3px;transition:width 0.6s"></div>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  // Sous-titre
+  const subEl = $('dash-food-sub');
+  if (subEl && total > 0) {
+    const last = divFoods[0];
+    const d = new Date(last.date + 'T12:00:00');
+    subEl.textContent = total + ' aliment' + (total > 1 ? 's' : '') +
+      ' \u00b7 dernier le ' + d.toLocaleDateString('fr-FR', { day:'numeric', month:'long' });
+  }
+}
+
+
+
+
+
 window.addEventListener('load', () => {
   try {
     const d = new Date();
@@ -3454,183 +5108,100 @@ window.addEventListener('load', () => {
   } catch(e) { console.warn('Load init error:', e); }
   try { drawTempChart(); } catch(e) { console.warn('drawTempChart:', e); }
   try { renderExamTable(); } catch(e) { console.warn('renderExamTable:', e); }
+  try { initDiversification(); } catch(e) { console.warn('initDiversification:', e); }
   setTimeout(() => { try { drawDashWeightChart(); } catch(e) { console.warn('dashChart:', e); } }, 100);
-  initSync(); // deferred internally, never blocks
+  setTimeout(() => { try { drawDashFoodCard(); } catch(e) { console.warn('dashFood:', e); } }, 150);
 });
 
 
-/* ============================================================
-   HILAL — SUPABASE SYNC TEMPS RÉEL
-   ============================================================ */
 
-const SUPA_URL = 'https://zlovoadlbbtygdbquxdc.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpsb3ZvYWRsYmJ0eWdkYnF1eGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3OTAzNDksImV4cCI6MjA4ODM2NjM0OX0.Iy1ZhwjS7PLHOTWv6WF7Okmg9ve2cZ4YcN75T2PjSdA';
-let sb = null;
-let syncStatus = 'connecting'; // connecting | online | offline
 
-function initSupabase() {
-  try {
-    sb = supabase.createClient(SUPA_URL, SUPA_KEY);
-    setSyncStatus('online');
-    loadAllData();
-    subscribeRealtime();
-  } catch(e) {
-    console.warn('Supabase init error:', e);
-    setSyncStatus('offline');
-    sb = null;
-  }
-}
+
+/* ================================================================
+   HILAL — STOCKAGE LOCAL (localStorage)
+   Toutes les données sont stockées localement.
+   ================================================================ */
+
+let sb = null; // Supabase désactivé
 
 function setSyncStatus(status) {
-  syncStatus = status;
-  const dots = document.querySelectorAll('.live-dot');
-  const labels = document.querySelectorAll('#sync-label');
-  dots.forEach(d => {
-    d.style.background = status === 'online' ? '#84FAB0'
-                       : status === 'connecting' ? '#F9CA24'
-                       : '#FF6A88';
-  });
-  labels.forEach(l => {
-    l.textContent = status === 'online' ? '2 appareils connectés · sync active'
-                  : status === 'connecting' ? 'Connexion...'
-                  : 'Hors ligne';
-  });
+  // Noop — sync retirée
 }
 
-/* ── LOAD ALL DATA FROM DB ───────────────────────────────── */
-async function loadAllData() {
-  await Promise.all([
-    loadTetes(),
-    loadSommeil(),
-    loadCouches(),
-    loadPoids(),
-    loadTemperatures()
-  ]);
+function initSync() {
+  // Noop — sync retirée
 }
 
-async function loadTetes() {
-  if (!sb) return;
-  const { data, error } = await sb.from('tetes')
-    .select('*').order('heure', { ascending: false }).limit(50);
-  if (error) { console.error('tetes load:', error); return; }
-  if (data && data.length) renderTetesLog(data);
+/* ── SAVE FUNCTIONS — localStorage uniquement ─────────────── */
+function dbSaveTetee(sein, heure, duree, note) {
+  const who = getProfileName();
+  const noteWithWho = note ? note + ' [' + who + ']' : '[' + who + ']';
+  const entry = { id: 't' + Date.now(), heure: heure || new Date().toISOString(), sein, duree_min: duree || null, note: noteWithWho };
+  const arr = JSON.parse(localStorage.getItem('hilal_tetes') || '[]');
+  arr.unshift(entry);
+  localStorage.setItem('hilal_tetes', JSON.stringify(arr.slice(0, 200)));
+  showToast('🍼 Tétée enregistrée');
+  renderTetesFromLocal();
+  updateAttentionUI();
 }
 
-async function loadSommeil() {
-  if (!sb) return;
-  const { data, error } = await sb.from('sommeil')
-    .select('*').order('debut', { ascending: false }).limit(20);
-  if (error) { console.error('sommeil load:', error); return; }
-  if (data && data.length) renderSommeilLog(data);
+function dbSaveCouche(type, couleur, quantite, heure, note) {
+  const who = getProfileName();
+  const noteWithWho = note ? note + ' [' + who + ']' : '[' + who + ']';
+  const entry = { id: 'c' + Date.now(), heure: heure || new Date().toISOString(), type, couleur: couleur || null, quantite: quantite || 'normal', note: noteWithWho };
+  const arr = JSON.parse(localStorage.getItem('hilal_couches') || '[]');
+  arr.unshift(entry);
+  localStorage.setItem('hilal_couches', JSON.stringify(arr.slice(0, 200)));
+  showToast('🧷 Couche enregistrée');
+  updateAttentionUI();
 }
 
-async function loadCouches() {
-  if (!sb) return;
-  const { data, error } = await sb.from('couches')
-    .select('*').order('heure', { ascending: false }).limit(50);
-  if (error) { console.error('couches load:', error); return; }
-  if (data && data.length) renderCouchesLog(data);
+function dbSaveSommeil(debut, fin, note) {
+  const who = getProfileName();
+  const noteWithWho = note ? note + ' [' + who + ']' : '[' + who + ']';
+  const entry = { id: 's' + Date.now(), debut: debut || new Date().toISOString(), fin: fin || null, note: noteWithWho };
+  const arr = JSON.parse(localStorage.getItem('hilal_sommeil') || '[]');
+  arr.unshift(entry);
+  localStorage.setItem('hilal_sommeil', JSON.stringify(arr.slice(0, 100)));
+  showToast('😴 Sommeil enregistré');
+  updateAttentionUI();
 }
 
-async function loadPoids() {
-  if (!sb) return;
-  const { data, error } = await sb.from('poids')
-    .select('*').order('heure', { ascending: true });
-  if (error) { console.error('poids load:', error); return; }
-  if (data && data.length) renderPoidsLog(data);
+function dbSavePoids(valeur_kg, taille_cm, heure) {
+  const entry = { id: 'p' + Date.now(), heure: heure || new Date().toISOString(), valeur_kg: parseFloat(valeur_kg), taille_cm: taille_cm ? parseFloat(taille_cm) : null, note: '[' + getProfileName() + ']' };
+  const arr = JSON.parse(localStorage.getItem('hilal_poids') || '[]');
+  arr.unshift(entry);
+  localStorage.setItem('hilal_poids', JSON.stringify(arr.slice(0, 100)));
+  showToast('⚖️ Poids enregistré');
 }
 
-async function loadTemperatures() {
-  if (!sb) return;
-  const { data, error } = await sb.from('temperatures')
-    .select('*').order('heure', { ascending: true }).limit(30);
-  if (error) { console.error('temp load:', error); return; }
-  if (data && data.length) {
-    tempData = data.map(r => ({
-      id: r.id,
-      val: parseFloat(r.valeur),
-      method: r.methode || 'Rectale (référence)',
-      time: new Date(r.heure).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),
-      date: new Date(r.heure).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}),
-      dateObj: new Date(r.heure)
-    }));
-    drawTempChart();
-  }
+function dbSaveTemp(valeur, methode, heure) {
+  const entry = { id: 'tmp' + Date.now(), heure: heure || new Date().toISOString(), valeur: parseFloat(valeur), methode: methode || null, note: '[' + getProfileName() + ']' };
+  const arr = JSON.parse(localStorage.getItem('hilal_temps') || '[]');
+  arr.unshift(entry);
+  localStorage.setItem('hilal_temps', JSON.stringify(arr.slice(0, 100)));
+  showToast('🌡️ Température enregistrée');
+  updateTempUI();
 }
 
-/* ── SAVE FUNCTIONS ─────────────────────────────────────── */
-async function dbSaveTetee(sein, heure, duree, note) {
-  if (!sb) { showToast('🍼 Tétée enregistrée (hors ligne — sync inactive)'); return; }
-  const { error } = await sb.from('tetes').insert({
-    heure: heure || new Date().toISOString(),
-    sein, duree_min: duree || null, note: note || null
-  });
-  if (error) { console.error('save tétée:', error); showToast('⚠️ Erreur sync'); }
-  else { showToast('🍼 Tétée enregistrée et synchronisée'); loadTetes(); }
+/* ── RENDER FROM LOCAL ─────────────────────────────────────── */
+function renderTetesFromLocal() {
+  try {
+    const data = JSON.parse(localStorage.getItem('hilal_tetes') || '[]');
+    const el = document.querySelector('#s-tetes .log-list') || document.querySelector('#s-alimentation .log-list');
+    if (!el || !data.length) return;
+    el.innerHTML = data.slice(0,15).map(r => {
+      const sein = r.sein === 'gauche' ? '◀' : r.sein === 'droit' ? '▶' : '🍼';
+      const bg = r.sein === 'gauche' ? 'var(--g-salmon)' : r.sein === 'droit' ? 'linear-gradient(135deg,#C4A8F8,#9880D8)' : 'var(--g-blue)';
+      const label = r.sein === 'gauche' ? 'Sein gauche' : r.sein === 'droit' ? 'Sein droit' : 'Biberon';
+      return '<div class="log-item"><div class="log-pill" style="background:' + bg + '">' + sein + '</div>' +
+        '<div class="log-info"><div class="log-main">' + label + '</div>' +
+        '<div class="log-sub">' + fmtDate(r.heure) + (r.duree_min ? ' · ' + r.duree_min + ' min' : '') + (r.note ? ' · ' + r.note.replace(/\[Papa\]|\[Maman\]/g,'').trim() : '') + '</div></div>' +
+        '<div class="log-time">' + fmtHeure(r.heure) + '</div></div>';
+    }).join('');
+  } catch(e) {}
 }
 
-async function dbSaveCouche(type, couleur, quantite, heure, note) {
-  if (!sb) { showToast('🧷 Couche enregistrée (hors ligne — sync inactive)'); return; }
-  const { error } = await sb.from('couches').insert({
-    heure: heure || new Date().toISOString(),
-    type, couleur: couleur || null,
-    quantite: quantite || 'normal', note: note || null
-  });
-  if (error) { console.error('save couche:', error); showToast('⚠️ Erreur sync'); }
-  else { showToast('🧷 Couche enregistrée et synchronisée'); loadCouches(); }
-}
-
-async function dbSaveSommeil(debut, fin, note) {
-  if (!sb) { showToast('😴 Sommeil enregistré (hors ligne — sync inactive)'); return; }
-  const { error } = await sb.from('sommeil').insert({
-    debut: debut || new Date().toISOString(),
-    fin: fin || null, note: note || null
-  });
-  if (error) { console.error('save sommeil:', error); showToast('⚠️ Erreur sync'); }
-  else { showToast('😴 Sommeil enregistré et synchronisé'); loadSommeil(); }
-}
-
-async function dbSavePoids(valeur_kg, taille_cm, heure) {
-  if (!sb) { showToast('⚖️ Poids enregistré (hors ligne — sync inactive)'); return; }
-  const { error } = await sb.from('poids').insert({
-    heure: heure || new Date().toISOString(),
-    valeur_kg: parseFloat(valeur_kg),
-    taille_cm: taille_cm ? parseFloat(taille_cm) : null
-  });
-  if (error) { console.error('save poids:', error); showToast('⚠️ Erreur sync'); }
-  else { showToast('⚖️ Poids enregistré et synchronisé'); loadPoids(); }
-}
-
-async function dbSaveTemp(valeur, methode, heure) {
-  if (!sb) { showToast('🌡️ Température enregistrée (hors ligne — sync inactive)'); return; }
-  const { error } = await sb.from('temperatures').insert({
-    heure: heure || new Date().toISOString(),
-    valeur: parseFloat(valeur), methode: methode || null
-  });
-  if (error) { console.error('save temp:', error); showToast('⚠️ Erreur sync'); }
-  else { showToast('🌡️ Température enregistrée et synchronisée'); loadTemperatures(); }
-}
-
-/* ── REALTIME SUBSCRIPTION ──────────────────────────────── */
-function subscribeRealtime() {
-  if (!sb) return;
-  const tables = ['tetes','sommeil','couches','poids','temperatures'];
-  tables.forEach(table => {
-    sb.channel('hilal-' + table)
-      .on('postgres_changes', { event: '*', schema: 'public', table }, payload => {
-        showToast('🔄 Sync · ' + (payload.new?.heure ? 
-          new Date(payload.new.heure).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : 
-          'mise à jour'));
-        loadAllData();
-      })
-      .subscribe(status => {
-        if (status === 'SUBSCRIBED') setSyncStatus('online');
-        if (status === 'CHANNEL_ERROR') setSyncStatus('offline');
-      });
-  });
-}
-
-/* ── RENDER FUNCTIONS ───────────────────────────────────── */
 function fmtHeure(iso) {
   return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 }
@@ -3638,91 +5209,7 @@ function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
 }
 
-function renderTetesLog(data) {
-  // Update alimentation log list
-  const el = document.querySelector('#s-tetes .log-list') || document.querySelector('#s-alimentation .log-list');
-  if (!el) return;
-  // Update dashboard log too
-  const dash = document.querySelector('#s-dashboard .log-list');
-
-  const html = data.slice(0,10).map(r => {
-    const sein = r.sein === 'gauche' ? '◀' : r.sein === 'droit' ? '▶' : '🍼';
-    const bg = r.sein === 'gauche' ? 'var(--g-salmon)' : r.sein === 'droit' ? 'linear-gradient(135deg,#C4A8F8,#9880D8)' : 'var(--g-blue)';
-    const label = r.sein === 'gauche' ? 'Sein gauche' : r.sein === 'droit' ? 'Sein droit' : 'Biberon';
-    return `<div class="log-item"><div class="log-pill" style="background:${bg}">${sein}</div>
-      <div class="log-info"><div class="log-main">${label}</div>
-      <div class="log-sub">${fmtDate(r.heure)}${r.duree_min ? ' · ' + r.duree_min + ' min' : ''}${r.note ? ' · ' + r.note : ''}</div></div>
-      <div class="log-time">${fmtHeure(r.heure)}</div></div>`;
-  }).join('');
-
-  if (el) el.innerHTML = html;
-
-  // Update dashboard activity
-  if (dash) {
-    const last4 = data.slice(0,4);
-    dash.innerHTML = last4.map(r => {
-      const sein = r.sein === 'gauche' ? '◀ Sein gauche' : r.sein === 'droit' ? '▶ Sein droit' : '🍼 Biberon';
-      const bg = r.sein === 'gauche' ? 'var(--g-salmon)' : 'linear-gradient(135deg,#C4A8F8,#9880D8)';
-      return `<div class="log-item"><div class="log-pill" style="background:${bg}">🍼</div>
-        <div class="log-info"><div class="log-main">Tétée ${r.sein}</div>
-        <div class="log-sub">${fmtDate(r.heure)}${r.note ? ' · ' + r.note : ''}</div></div>
-        <div class="log-time">${fmtHeure(r.heure)}</div></div>`;
-    }).join('');
-  }
-
-  // Update tile
-  const tile = document.querySelector('#s-tetes .tile-val') || document.querySelector('#s-alimentation .tile-val');
-  if (tile) tile.textContent = data.length;
-}
-
-function renderCouchesLog(data) {
-  const el = document.querySelector('.diaper-timeline-track');
-  // Update tile counts
-  const wetCount  = data.filter(r => r.type === 'mouillée' || r.type === 'mixte').length;
-  const dirtCount = data.filter(r => r.type === 'souillée' || r.type === 'mixte').length;
-  const tiles = document.querySelectorAll('#s-couches .tile-val');
-  if (tiles[0]) tiles[0].textContent = wetCount;
-  if (tiles[1]) tiles[1].textContent = dirtCount;
-  if (tiles[2]) tiles[2].textContent = data.length;
-}
-
-function renderSommeilLog(data) {
-  if (!data.length) return;
-  const last = data[0];
-  const debut = new Date(last.debut);
-  const fin   = last.fin ? new Date(last.fin) : null;
-  const dureeMs = fin ? fin - debut : 0;
-  const dureeH  = Math.floor(dureeMs / 3600000);
-  const dureeM  = Math.floor((dureeMs % 3600000) / 60000);
-  const tiles = document.querySelectorAll('#s-sommeil .tile-val');
-  if (tiles[0]) { tiles[0].textContent = dureeH; }
-  if (tiles[2]) { tiles[2].textContent = dureeH + 'h' + (dureeM>0?dureeM:''); }
-}
-
-function renderPoidsLog(data) {
-  if (!data.length) return;
-  // Update weight chart
-  const chartData = data.map(r => parseFloat(r.valeur_kg));
-  const chartLabels = data.map(r => fmtDate(r.heure));
-  // Update in drawWeightChart by patching data
-  window._weightData = chartData;
-  window._weightLabels = chartLabels;
-  drawWeightChart();
-
-  // Update log list in croissance
-  const el = document.querySelector('#s-croissance .log-list');
-  if (!el) return;
-  el.innerHTML = data.slice().reverse().map(r => {
-    const pct = data[0] ? (((parseFloat(r.valeur_kg) - parseFloat(data[0].valeur_kg)) / parseFloat(data[0].valeur_kg)) * 100).toFixed(1) : null;
-    return `<div class="log-item"><div class="log-pill" style="background:var(--g-mint)">⚖️</div>
-      <div class="log-info"><div class="log-main">${r.valeur_kg} kg${r.taille_cm ? ' · ' + r.taille_cm + ' cm' : ''}</div>
-      <div class="log-sub">${fmtDate(r.heure)}${r.note ? ' · ' + r.note : ''}</div></div>
-      ${pct ? '<div class="log-time" style="font-size:10px;font-weight:800">' + (pct > 0 ? '+' : '') + pct + '%</div>' : ''}</div>`;
-  }).join('');
-}
-
-/* ── QUICK LOG MODAL ────────────────────────────────────── */
-// Patch saveTempMeasure to also save to Supabase (using variable to avoid hoisting conflict)
+/* ── PATCH saveTempMeasure → dbSaveTemp ─────────────────── */
 const _patchedSaveTemp = function() {
   const v = parseFloat(document.getElementById('new-temp-val').value);
   const time = document.getElementById('new-temp-time').value;
@@ -3733,34 +5220,11 @@ const _patchedSaveTemp = function() {
   const [h,mn] = time.split(':').map(Number);
   const iso = new Date(y,m-1,d,h,mn).toISOString();
   dbSaveTemp(v, method, iso);
-  // call original logic inline (no recursive ref)
   const tempModal = document.getElementById('temp-modal');
   if (tempModal) tempModal.classList.remove('open');
-  showToast('🌡️ Température enregistrée');
 };
 window.saveTempMeasure = _patchedSaveTemp;
 
-
-/* ── INIT ───────────────────────────────────────────────── */
-function initSync() {
-  // Defer Supabase init so CDN has time to load; never crash the app
-  setTimeout(() => {
-    try {
-      if (typeof supabase !== 'undefined' && supabase.createClient) {
-        initSupabase();
-      } else {
-        console.warn('Supabase CDN not loaded — running offline');
-        setSyncStatus('offline');
-      }
-    } catch(e) {
-      console.warn('Supabase init failed:', e);
-      setSyncStatus('offline');
-    }
-  }, 500);
-}
-
-// Draw charts when section becomes visible via ResizeObserver if needed
-document.querySelector('#s-sommeil .card')?.addEventListener('click', ()=>{});
 </script>
 </body>
 </html>
