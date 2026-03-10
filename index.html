@@ -1216,7 +1216,7 @@ canvas { display:block; }
         <div style="width:36px;height:36px;border-radius:12px;background:var(--g-mint);display:flex;align-items:center;justify-content:center;font-size:18px">⚖️</div>
         <div>
           <div class="card-title">Suivi du poids</div>
-          <div class="card-sub">Naissance → J+3 · OMS Garçon</div>
+          <div class="card-sub">Naissance → J+7 · OMS Garçon</div>
         </div>
       </div>
       <span class="card-link" onclick="nav('croissance')">Courbe complète →</span>
@@ -1416,48 +1416,52 @@ canvas { display:block; }
 
 <!-- ===== TETEES ===== -->
 <div class="section" id="s-tetes">
-  <div class="g3">
-    <div class="tile" style="background:var(--g-salmon)" onclick="startChrono('tete-g')">
-      <span class="tile-emoji">◀</span>
-      <div style="font-size:18px;font-weight:900">Sein gauche</div>
-      <div class="tile-sub" style="margin-top:6px">22h40 · 1 tétée</div>
-      <div class="tile-badge">▶ Démarrer chrono</div>
+
+  <!-- Tuiles dynamiques -->
+  <div class="g3" id="tetes-tiles">
+    <div class="tile" style="background:var(--g-salmon)">
+      <span class="tile-emoji">🍼</span>
+      <div><span class="tile-val" id="tetes-count-today">—</span></div>
+      <div class="tile-lbl">Sessions aujourd'hui</div>
+      <div class="tile-sub" id="tetes-last-time">—</div>
+      <div class="tile-badge" id="tetes-next-badge">—</div>
     </div>
-    <div class="tile" style="background:linear-gradient(140deg,#C4A8F8,#9880D8)" onclick="startChrono('tete-d')">
-      <span class="tile-emoji">▶</span>
-      <div style="font-size:18px;font-weight:900">Sein droit</div>
-      <div class="tile-sub" style="margin-top:6px">03h00 · 1 tétée</div>
-      <div class="tile-badge">▶ Démarrer chrono</div>
+    <div class="tile" style="background:var(--g-purple)">
+      <span class="tile-emoji">⏱</span>
+      <div><span class="tile-val" id="tetes-avg-interval">—</span></div>
+      <div class="tile-lbl">Intervalle moyen</div>
+      <div class="tile-sub">Objectif : 2h–3h</div>
+      <div class="tile-badge" id="tetes-interval-badge">—</div>
     </div>
     <div class="tile" style="background:var(--g-blue); color:#1A2A4A" onclick="openModal('biberon')">
-      <span class="tile-emoji">🍼</span>
+      <span class="tile-emoji">🍶</span>
       <div style="font-size:18px;font-weight:900">Biberon</div>
       <div class="tile-sub" style="margin-top:6px">0 ce jour</div>
       <div class="tile-badge">+ Ajouter</div>
     </div>
   </div>
-  <div class="g2">
-    <div class="card">
-      <div class="card-title">Historique du jour</div>
-      <div class="log-list">
-        <div class="log-item" style="border-left:3px solid #FF9A8B"><div class="log-pill" style="background:var(--g-salmon)">◀</div><div class="log-info"><div class="log-main">Sein gauche</div><div class="log-sub">5 mars 22h40 · Bonne prise · avant endormissement</div></div><div class="log-time">22h40</div><div class="log-dur">—</div></div>
-        <div class="log-item" style="border-left:3px solid #C4A8F8"><div class="log-pill" style="background:linear-gradient(135deg,#C4A8F8,#9880D8)">▶</div><div class="log-info"><div class="log-main">Sein droit</div><div class="log-sub">6 mars 03h00 · Après réveil · bonne succion</div></div><div class="log-time">03h00</div><div class="log-dur">—</div></div>
+
+  <!-- Analyse intervalles -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Analyse des intervalles</div>
+        <div class="card-sub" id="tetes-analysis-sub">48 dernières heures · mise à jour en temps réel</div>
       </div>
+      <button class="btn-add" style="font-size:11px;padding:8px 14px" onclick="openModal('tetee')">+ Tétée</button>
     </div>
-    <div class="card">
-      <div class="card-title">Tendance 7 jours</div>
-      <div class="sleep-bars" style="height:120px">
-        <div class="sb-wrap"><div class="sb-track"><div class="sb-fill" style="height:0%;background:var(--g-salmon)"></div></div><div class="sb-lbl">Lun</div></div>
-        <div class="sb-wrap"><div class="sb-track"><div class="sb-fill" style="height:0%;background:var(--g-salmon)"></div></div><div class="sb-lbl">Mar</div></div>
-        <div class="sb-wrap"><div class="sb-track"><div class="sb-fill" style="height:0%;background:var(--g-salmon)"></div></div><div class="sb-lbl">Mer</div></div>
-        <div class="sb-wrap"><div class="sb-track"><div class="sb-fill" style="height:0%;background:var(--g-salmon)"></div></div><div class="sb-lbl">J+0</div></div>
-        <div class="sb-wrap"><div class="sb-track"><div class="sb-fill" style="height:0%;background:var(--g-salmon)"></div></div><div class="sb-lbl">J+1</div></div>
-        <div class="sb-wrap"><div class="sb-track"><div class="sb-fill" style="height:0%;background:var(--g-salmon)"></div></div><div class="sb-lbl">J+2</div></div>
-        <div class="sb-wrap"><div class="sb-track"><div class="sb-fill" style="height:28%;background:var(--g-hero)"></div></div><div class="sb-lbl" style="background:var(--g-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Nuit</div></div>
-      </div>
-      <div style="text-align:center;font-size:11px;color:var(--text-light);font-weight:700;margin-top:6px">2 tétées enregistrées · nuit du 5 au 6 mars</div>
-    </div>
+    <div id="tetes-interval-list" style="margin-bottom:4px"></div>
   </div>
+
+  <!-- Historique complet -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Toutes les sessions</div>
+      <div class="card-sub" id="tetes-total-sub">—</div>
+    </div>
+    <div class="log-list" id="tetes-full-log"></div>
+  </div>
+
 </div>
 
 <!-- ===== SOMMEIL ===== -->
@@ -2492,13 +2496,17 @@ canvas { display:block; }
     <!-- SEIN selector — tétée uniquement, en pill buttons larges -->
     <div class="form-group" id="sein-group">
       <label class="form-label">Sein</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
         <button id="btn-sein-g" onclick="selectSein('gauche')"
-          style="padding:14px;border-radius:16px;border:2px solid rgba(255,154,139,0.4);background:linear-gradient(135deg,rgba(255,154,139,0.15),rgba(255,106,136,0.08));font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:#CC4060;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px">
+          style="padding:12px;border-radius:16px;border:2px solid rgba(255,154,139,0.4);background:linear-gradient(135deg,rgba(255,154,139,0.15),rgba(255,106,136,0.08));font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#CC4060;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px">
           ◀ Gauche
         </button>
+        <button id="btn-sein-gd" onclick="selectSein('G+D')"
+          style="padding:12px;border-radius:16px;border:2px solid rgba(167,139,250,0.25);background:linear-gradient(135deg,rgba(167,139,250,0.10),rgba(255,106,136,0.06));font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:var(--purple-deep);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px">
+          ◀▶ Les deux
+        </button>
         <button id="btn-sein-d" onclick="selectSein('droit')"
-          style="padding:14px;border-radius:16px;border:2px solid rgba(167,139,250,0.4);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(124,110,245,0.08));font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:#7C6EF5;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px">
+          style="padding:12px;border-radius:16px;border:2px solid rgba(167,139,250,0.4);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(124,110,245,0.08));font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#7C6EF5;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px">
           Droit ▶
         </button>
       </div>
@@ -2507,13 +2515,7 @@ canvas { display:block; }
     <!-- SLIDER durée — tétée et sommeil -->
     <div class="form-group" id="duree-slider-group">
       <label class="form-label">Durée / Quantité
-        <span id="duree-slider-val" style="float:right;font-weight:900;color:var(--purple-deep);font-size:13px">15 min</span>
-      </label>
-      <input type="range" id="log-duree-slider" min="1" max="60" step="1" value="15"
-        oninput="updateDureeSlider(this.value)"
-        style="width:100%;accent-color:var(--purple-deep);height:4px;margin:10px 0 4px;cursor:pointer">
-      <div style="display:flex;justify-content:space-between;font-size:9px;font-weight:700;color:var(--text-light)">
-        <span>5M</span><span>15M</span><span>30M</span><span>45M</span><span>60M</span>
+        <span id="duree-slider-val" styl <span>5M</span><span>15M</span><span>30M</span><span>45M</span><span>60M</span>
       </div>
     </div>
 
@@ -2581,6 +2583,7 @@ canvas { display:block; }
 <script>
 /* ===== GLOBALS ===== */
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+let _currentSection = 'dashboard';
 
 /* ===== NAVIGATION ===== */
 const TITLES = {
@@ -2620,14 +2623,18 @@ function nav(id) {
     if (id === 'dashboard') {
       requestAnimationFrame(() => {
         updateAttentionUI();
-        drawDashWeightChart();
-        drawDashFoodCard();
+        requestAnimationFrame(() => {
+          try { drawDashWeightChart(); } catch(e) {}
+          try { drawDashSleepChart();  } catch(e) {}
+          try { drawDashFoodCard();    } catch(e) {}
+        });
       });
     }
     if (id === 'sante')       requestAnimationFrame(() => { try { drawTempChart();      } catch(e){} });
     if (id === 'sommeil')     requestAnimationFrame(() => { try { drawSleepTimeline();  } catch(e){} });
     if (id === 'croissance')  { renderWeightLog(); requestAnimationFrame(drawWeightChart); }
     if (id === 'sommeil')    { requestAnimationFrame(drawSleepCurveChart); }
+    if (id === 'tetes')      { requestAnimationFrame(renderTetesAnalysis); }
 
     closeSidebar();
   };
@@ -2743,6 +2750,8 @@ function openModal(type) {
     }
   }
   _logQty = 1;
+  _selectedSein = 'gauche';
+  selectSein('gauche');
   _updateModalFields();
   document.getElementById('modal').classList.add('open');
 }
@@ -2915,6 +2924,17 @@ function _updateModalFields() {
 
 function selectSein(sein) {
   _selectedSein = sein;
+  // Reset all sein buttons
+  ['btn-sein-g','btn-sein-gd','btn-sein-d'].forEach(id => {
+    const b = document.getElementById(id);
+    if (!b) return;
+    const isSel = (id === 'btn-sein-g' && sein === 'gauche') ||
+                  (id === 'btn-sein-d' && sein === 'droit')   ||
+                  (id === 'btn-sein-gd' && sein === 'G+D');
+    b.style.borderWidth = isSel ? '2.5px' : '2px';
+    b.style.transform   = isSel ? 'scale(1.04)' : 'scale(1)';
+    b.style.boxShadow   = isSel ? '0 4px 14px rgba(124,110,245,0.3)' : 'none';
+  });
   const bg = document.getElementById('btn-sein-g');
   const bd = document.getElementById('btn-sein-d');
   if (!bg || !bd) return;
@@ -2946,6 +2966,8 @@ function saveLog() {
   if (!date || !heure) { showToast('⚠️ Remplis la date et l\'heure'); return; }
 
   const debutISO = date + 'T' + heure + ':00';
+  const dateFin  = document.getElementById('log-date-fin')?.value  || '';
+  const heureFin = document.getElementById('log-heure-fin')?.value || '';
   const finISO   = (dateFin && heureFin) ? (dateFin + 'T' + heureFin + ':00') : null;
 
   // Compute duration in minutes if fin provided
@@ -2964,15 +2986,30 @@ function saveLog() {
   if (type === 'tetee') {
     times.forEach(t => {
       const iso = t.date + 'T' + t.heure + ':00';
-      dbSaveTetee(_selectedSein, iso, dureeMin, note || null);
+      const sliderVal = parseInt(document.getElementById('log-duree-slider')?.value || '15');
+      dbSaveTetee(_selectedSein, iso, sliderVal, note || null);
     });
     if (qty > 1) { closeModal(); showToast('🍼 ' + qty + ' tétées enregistrées'); return; }
   } else if (type === 'sommeil') {
-    dbSaveSommeil(debutISO, finISO, note || null);
+    // If no fin time, compute from slider duration (minutes → add to debut)
+    let resolvedFin = finISO;
+    if (!resolvedFin) {
+      const durMin = parseInt(document.getElementById('log-duree-slider')?.value || '0');
+      if (durMin > 0) {
+        const finDate = new Date(new Date(debutISO).getTime() + durMin * 60000);
+        resolvedFin = finDate.toISOString().replace('.000Z','').replace('Z','');
+      }
+    }
+    dbSaveSommeil(debutISO, resolvedFin, note || null);
   } else if (type === 'couche') {
     times.forEach(t => {
       const iso = t.date + 'T' + t.heure + ':00';
-      dbSaveCouche('mixte', null, 'normal', iso, note || null);
+      const coucheNote = document.getElementById('log-note')?.value || '';
+      const isSouille  = coucheNote.toLowerCase().includes('selle') || coucheNote.toLowerCase().includes('caca') || coucheNote.toLowerCase().includes('souil');
+      const isMouille  = coucheNote.toLowerCase().includes('pipi') || coucheNote.toLowerCase().includes('urine') || coucheNote.toLowerCase().includes('mouil');
+      const cType      = isSouille ? 'souille' : isMouille ? 'mouille' : 'mixte';
+      const cCouleur   = coucheNote.toLowerCase().includes('jaune') ? 'jaune' : coucheNote.toLowerCase().includes('verte') ? 'verte' : null;
+      dbSaveCouche(cType, cCouleur, 'normal', iso, note || null);
     });
     if (qty > 1) {
       closeModal();
@@ -3276,7 +3313,7 @@ function drawWeightChart() {
   const ctx  = canvas.getContext('2d');
   const dpr  = window.devicePixelRatio || 1;
   const rect = canvas.parentElement.getBoundingClientRect();
-  const W    = rect.width;
+  const W    = rect.width || canvas.parentElement.offsetWidth || 340;
   const H    = 190;
   canvas.width        = W * dpr;
   canvas.height       = H * dpr;
@@ -4540,6 +4577,137 @@ function updateAlimentsUI() {
 
 
 /* ── Mini courbe poids — Dashboard ─────────────────────────── */
+/* ================================================================
+   TÉTÉES — Analyse intervalles dynamique
+   ================================================================ */
+function renderTetesAnalysis() {
+  const allTetes = JSON.parse(localStorage.getItem('hilal_tetes') || '[]');
+  if (!allTetes.length) return;
+
+  // Sort oldest → newest
+  const sorted = [...allTetes]
+    .filter(t => t.heure)
+    .sort((a, b) => new Date(a.heure) - new Date(b.heure));
+
+  const now = new Date();
+  const cutoff = new Date(now - 48 * 3600000); // 48h window
+  const recent = sorted.filter(t => new Date(t.heure) >= cutoff);
+
+  // ── Calcul intervalles ──────────────────────────────────────
+  const intervals = [];
+  for (let i = 1; i < sorted.length; i++) {
+    const prev   = new Date(sorted[i-1].heure);
+    const curr   = new Date(sorted[i].heure);
+    const diffMin = Math.round((curr - prev) / 60000);
+    intervals.push({ prev, curr, diffMin, idx: i });
+  }
+
+  // ── Stats du jour ────────────────────────────────────────────
+  const todayStr = now.toISOString().split('T')[0];
+  const todayTetes = sorted.filter(t => t.heure.startsWith(todayStr));
+  const countToday = document.getElementById('tetes-count-today');
+  const lastTime   = document.getElementById('tetes-last-time');
+  const nextBadge  = document.getElementById('tetes-next-badge');
+  const avgEl      = document.getElementById('tetes-avg-interval');
+  const avgBadge   = document.getElementById('tetes-interval-badge');
+  const subEl      = document.getElementById('tetes-analysis-sub');
+  const totalSub   = document.getElementById('tetes-total-sub');
+
+  if (countToday) countToday.textContent = todayTetes.length;
+
+  // Dernière tétée
+  const last = sorted[sorted.length - 1];
+  const lastDt = new Date(last.heure);
+  const sinceMin = Math.round((now - lastDt) / 60000);
+  const sinceH   = Math.floor(sinceMin / 60);
+  const sinceM   = sinceMin % 60;
+  const sinceStr = sinceH > 0 ? sinceH + 'h' + String(sinceM).padStart(2,'0') : sinceM + 'min';
+  if (lastTime) lastTime.textContent = 'Il y a ' + sinceStr + ' · ' + lastDt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+
+  // Prochaine tétée estimée (moyenne des 6 derniers intervalles)
+  const lastIntervals = intervals.slice(-6).map(i => i.diffMin);
+  const avgMin = lastIntervals.length ? Math.round(lastIntervals.reduce((a,b)=>a+b,0) / lastIntervals.length) : 150;
+  const avgH = Math.floor(avgMin / 60), avgM = avgMin % 60;
+  if (avgEl) avgEl.textContent = avgH + 'h' + String(avgM).padStart(2,'0');
+
+  const nextEstMin = avgMin - sinceMin;
+  if (nextBadge) {
+    if (nextEstMin > 0) {
+      const nH = Math.floor(nextEstMin/60), nM = nextEstMin%60;
+      nextBadge.textContent = '→ dans ~' + (nH > 0 ? nH + 'h' + String(nM).padStart(2,'0') : nM + 'min');
+    } else {
+      nextBadge.textContent = '→ Tétée attendue maintenant';
+    }
+  }
+
+  // Badge qualité intervalle
+  if (avgBadge) {
+    if (avgMin < 90)       { avgBadge.textContent = '⚡ Cluster feeding'; }
+    else if (avgMin < 150) { avgBadge.textContent = '✅ Rythme idéal'; }
+    else if (avgMin < 240) { avgBadge.textContent = '✅ Bon rythme'; }
+    else                   { avgBadge.textContent = '⏰ Intervalles longs'; }
+  }
+
+  if (subEl) subEl.textContent = sorted.length + ' sessions enregistrées · ' + recent.length + ' sur 48h';
+  if (totalSub) totalSub.textContent = sorted.length + ' sessions au total · ' + todayTetes.length + ' aujourd\'hui';
+
+  // ── Liste des intervalles récents ────────────────────────────
+  const listEl = document.getElementById('tetes-interval-list');
+  if (listEl && intervals.length) {
+    const recentIntervals = intervals.filter(iv => iv.curr >= cutoff);
+
+    listEl.innerHTML = recentIntervals.map(iv => {
+      const h = Math.floor(iv.diffMin / 60);
+      const m = iv.diffMin % 60;
+      const durStr = h > 0 ? h + 'h' + String(m).padStart(2,'0') : m + 'min';
+
+      let color, bg, icon, label;
+      if (iv.diffMin < 60) {
+        color = '#CC4060'; bg = 'rgba(255,106,136,0.10)'; icon = '⚡';
+        label = 'Cluster feeding';
+      } else if (iv.diffMin < 90) {
+        color = '#AA5500'; bg = 'rgba(249,180,36,0.12)'; icon = '⚡';
+        label = 'Court · normal nouveau-né';
+      } else if (iv.diffMin <= 180) {
+        color = '#2A9B8A'; bg = 'rgba(132,250,176,0.10)'; icon = '✅';
+        label = 'Intervalle idéal';
+      } else if (iv.diffMin <= 240) {
+        color = '#5577CC'; bg = 'rgba(161,196,253,0.12)'; icon = '🕐';
+        label = 'Espacé · surveiller';
+      } else {
+        color = '#CC4060'; bg = 'rgba(255,154,139,0.12)'; icon = '⏰';
+        label = 'Long · réveiller si nécessaire';
+      }
+
+      const prevStr = iv.prev.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+      const currStr = iv.curr.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+      const dateStr = iv.curr.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'});
+
+      // Bar width proportional (max 5h = 100%)
+      const barW = Math.min(100, Math.round((iv.diffMin / 300) * 100));
+
+      return '<div style="margin-bottom:10px;padding:12px 14px;border-radius:16px;background:' + bg + ';border:1.5px solid ' + color + '22">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<span style="font-size:16px">' + icon + '</span>' +
+            '<div>' +
+              '<div style="font-size:13px;font-weight:900;color:var(--text)">' + prevStr + ' → ' + currStr + '</div>' +
+              '<div style="font-size:10px;font-weight:700;color:var(--text-light)">' + dateStr + ' · ' + label + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="font-size:18px;font-weight:900;color:' + color + ';font-variant-numeric:tabular-nums">' + durStr + '</div>' +
+        '</div>' +
+        '<div style="height:5px;background:rgba(167,139,250,0.10);border-radius:10px;overflow:hidden">' +
+          '<div style="height:100%;width:' + barW + '%;background:' + color + ';border-radius:10px;transition:width 0.6s ease"></div>' +
+        '</div>' +
+      '</div>';
+    }).reverse().join(''); // plus récents en premier
+  }
+
+  // ── Log complet ───────────────────────────────────────────────
+  renderTetesFromLocal();
+}
+
 /* ── Mini courbe sommeil — Dashboard ────────────────────── */
 function drawDashSleepChart() {
   const canvas = document.getElementById('dashSleepChart');
@@ -4565,8 +4733,9 @@ function drawDashSleepChart() {
   const ctx  = canvas.getContext('2d');
   const dpr  = window.devicePixelRatio || 1;
   const rect = canvas.parentElement.getBoundingClientRect();
-  const W = rect.width || 340;
+  const W = rect.width || canvas.parentElement.offsetWidth || 340;
   const H = 110;
+  if (!rect.width && !canvas.parentElement.offsetWidth) { requestAnimationFrame(drawDashSleepChart); return; }
   canvas.width = W * dpr; canvas.height = H * dpr;
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   ctx.scale(dpr, dpr);
@@ -4728,8 +4897,9 @@ function drawDashWeightChart() {
   const ctx  = canvas.getContext('2d');
   const dpr  = window.devicePixelRatio || 1;
   const rect = canvas.parentElement.getBoundingClientRect();
-  const W    = rect.width;
+  const W    = rect.width || canvas.parentElement.offsetWidth || 340;
   const H    = 110;
+  if (!W) { requestAnimationFrame(drawDashWeightChart); return; }
   canvas.width        = W * dpr;
   canvas.height       = H * dpr;
   canvas.style.width  = W + 'px';
@@ -4917,7 +5087,8 @@ function drawDashFoodCard() {
   const ctx  = canvas.getContext('2d');
   const dpr  = window.devicePixelRatio || 1;
   const rect = canvas.parentElement.getBoundingClientRect();
-  const W    = rect.width;
+  const W    = rect.width || canvas.parentElement.offsetWidth || 340;
+  if (!W) { requestAnimationFrame(drawDashFoodCard); return; }
 
   canvas.width        = W * dpr;
   canvas.height       = H * dpr;
@@ -5117,6 +5288,7 @@ function drawDashFoodCard() {
       { id:'w_j2',    heure:'2026-03-05T10:00:00', valeur_kg:3.300, taille_cm:null, note:'J+2' },
       { id:'w_j3',    heure:'2026-03-06T10:00:00', valeur_kg:3.320, taille_cm:null, note:'J+3 reprise' },
       { id:'w_j4',    heure:'2026-03-07T10:00:00', valeur_kg:3.430, taille_cm:null, note:'J+4' },
+      { id:'w_j7',    heure:'2026-03-10T09:00:00', valeur_kg:3.585, taille_cm:null, note:'J+7 · quasi retour poids naissance (-5g)' },
     ];
 
     // Fusionner : garder les entrées utilisateur, ajouter les seeds manquantes
@@ -5707,8 +5879,7 @@ function sendNextRdvEmail() {
     '🚋 Tram ligne E — arrêt Hôtel de Ville',
     '',
     '— Application Hilal · Suivi bébé',
-  ].filter(l => l !== null).join('
-'));
+  ].filter(l => l !== null).join('\n'));
 
   const to = encodeURIComponent(emails.join(','));
   window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
@@ -5909,7 +6080,7 @@ function renderRdvList() {
     const month = d.toLocaleDateString('fr-FR',{month:'short'});
     const diff = Math.ceil((d - now) / 86400000);
     const urgBadge = diff <= 3 ? '<span style="background:var(--g-salmon);color:white;font-size:9px;font-weight:900;padding:2px 8px;border-radius:20px;margin-left:6px">' + (diff === 0 ? "Aujourd'hui" : diff === 1 ? 'Demain' : 'J-'+diff) + '</span>' : '';
-    return '<div class="rdv-item" onclick="openRdvDetail('' + r.id + '')">' +
+    return '<div class="rdv-item" onclick="openRdvDetail(\'' + r.id + '\')">' +
       '<div class="rdv-date-box" style="background:' + (r.color||'var(--g-purple)') + '">' +
         '<div class="rdv-day">' + day + '</div><div class="rdv-month">' + month + '</div>' +
       '</div>' +
@@ -6233,6 +6404,23 @@ function calNext() {
   // Note : 1 session = les 2 seins d'affilée = 1 repas
   const tetesAll = JSON.parse(localStorage.getItem('hilal_tetes') || '[]');
   const hasT230  = tetesAll.some(t => t.id === 't_s07');
+  /* ── Tétées soirée 8 mars + journée 9 mars ── */
+  const hasNew   = tetesAll.some(t => t.id === 't_s09');
+  if (!hasNew) {
+    const nouvelles2 = [
+      /* Soirée 8 mars */
+      { id:'t_s09', heure:'2026-03-08T19:30:00', sein:'G+D', duree_min:20, note:'Session G+D · soirée calme [Maman]' },
+      { id:'t_s10', heure:'2026-03-08T20:40:00', sein:'G+D', duree_min:18, note:'Session G+D · 1h10 après préc. · cluster feeding soirée [Papa]' },
+      { id:'t_s11', heure:'2026-03-08T23:30:00', sein:'G+D', duree_min:22, note:'Session G+D · avant longue nuit [Maman]' },
+      /* Nuit/matin 9 mars */
+      { id:'t_s12', heure:'2026-03-09T04:30:00', sein:'G+D', duree_min:24, note:'Session G+D · réveil nuit après 5h · longue pause [Papa]' },
+      { id:'t_s13', heure:'2026-03-09T06:00:00', sein:'G+D', duree_min:16, note:'Session G+D · 1h30 après préc. [Maman]' },
+      { id:'t_s14', heure:'2026-03-09T10:10:00', sein:'G+D', duree_min:21, note:'Session G+D · matin · 4h10 après préc. [Papa]' },
+    ];
+    const ids2 = new Set(tetesAll.map(t => t.id));
+    nouvelles2.forEach(n => { if (!ids2.has(n.id)) tetesAll.unshift(n); });
+    localStorage.setItem('hilal_tetes', JSON.stringify(tetesAll.slice(0, 200)));
+  }
   if (!hasT230) {
     const nouvelles = [
       { id:'t_s07', heure:'2026-03-08T02:30:00', sein:'G+D', duree_min:25, note:'Session complète · sein G puis D · après réveil nuit [Papa]' },
@@ -6243,7 +6431,29 @@ function calNext() {
   }
 })();
 
+
+/* ── Redraw charts when their canvas becomes visible ──────── */
+function observeAndDraw(canvasId, drawFn) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        requestAnimationFrame(() => { try { drawFn(); } catch(err) {} });
+      }
+    });
+  }, { threshold: 0.1 });
+  obs.observe(canvas);
+}
+
 window.addEventListener('load', () => {
+  // Wire up IntersectionObservers for charts in hidden sections
+  observeAndDraw('sleepCurveChart', drawSleepCurveChart);
+  observeAndDraw('wChart',          drawWeightChart);
+  observeAndDraw('tempChart',       drawTempChart);
+  observeAndDraw('dashWeightChart', drawDashWeightChart);
+  observeAndDraw('tetes-interval-list', renderTetesAnalysis);
+  observeAndDraw('dashSleepChart',  drawDashSleepChart);
   try {
     const d = new Date();
     const el = document.getElementById('topbar-date');
@@ -6256,15 +6466,17 @@ window.addEventListener('load', () => {
     checkRdvAlerts();
   } catch(e) { console.warn('Load init error:', e); }
   try { drawTempChart(); } catch(e) { console.warn('drawTempChart:', e); }
-  try { drawSleepCurveChart(); } catch(e) { console.warn('drawSleepCurveChart:', e); }
   try { renderExamTable(); } catch(e) { console.warn('renderExamTable:', e); }
   try { initDiversification(); } catch(e) { console.warn('initDiversification:', e); }
   try { renderWeightLog(); } catch(e) { console.warn('renderWeightLog:', e); }
-  requestAnimationFrame(() => { try { drawWeightChart(); } catch(e) { console.warn('drawWeightChart:', e); } });
+  // Double-RAF: wait for layout to complete before drawing
   requestAnimationFrame(() => {
-    try { drawDashWeightChart(); } catch(e) {}
-    try { drawDashSleepChart(); } catch(e) {}
-    try { drawDashFoodCard(); } catch(e) {}
+    requestAnimationFrame(() => {
+      try { drawDashWeightChart(); } catch(e) { console.warn('drawDashWeightChart:', e); }
+      try { drawDashSleepChart();  } catch(e) { console.warn('drawDashSleepChart:', e);  }
+      try { drawDashFoodCard();    } catch(e) { console.warn('drawDashFoodCard:', e);    }
+      try { drawWeightChart();     } catch(e) { console.warn('drawWeightChart:', e);     }
+    });
   });
 });
 
@@ -6297,6 +6509,7 @@ function dbSaveTetee(sein, heure, duree, note) {
   localStorage.setItem('hilal_tetes', JSON.stringify(arr.slice(0, 200)));
   showToast('🍼 Tétée enregistrée');
   renderTetesFromLocal();
+  renderTetesAnalysis();
   updateAttentionUI();
 }
 
